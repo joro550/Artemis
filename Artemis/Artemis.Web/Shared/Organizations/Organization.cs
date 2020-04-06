@@ -1,4 +1,6 @@
-﻿namespace Artemis.Web.Shared.Organizations
+﻿using System.Runtime.CompilerServices;
+
+namespace Artemis.Web.Shared.Organizations
 {
     public class Organization
     {

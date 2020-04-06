@@ -10,7 +10,7 @@ namespace Artemis.Web.Server.Data
 {
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
-        public DbSet<Event> Events { get; set; }
+        public DbSet<EventEntity> Events { get; set; }
         public DbSet<OrganizationEntity> Organizations { get; set; }
 
         public ApplicationDbContext(
@@ -23,12 +23,12 @@ namespace Artemis.Web.Server.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Event>()
+            modelBuilder.Entity<EventEntity>()
                 .HasDiscriminator(b => b.EventType)
-                .HasValue<Event>(EventType.Persistent)
+                .HasValue<EventEntity>(EventType.Persistent)
                 .HasValue<TimedEvent>(EventType.Timed);
 
-            modelBuilder.Entity<Event>()
+            modelBuilder.Entity<EventEntity>()
                 .HasOne<OrganizationEntity>()
                 .WithMany(organization => organization.Events)
                 .HasForeignKey(ev => ev.OrganizationId);

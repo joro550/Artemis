@@ -1,6 +1,9 @@
-﻿@page "/events/list"
+﻿@page "/events/list/{OrganizationId:int}"
+@page "/events/{OrganizationId:int}"
+
 @inject HttpClient Http
 @inject NavigationManager Navigation
+
 @using Artemis.Web.Shared.Events
 
 <h1>Events</h1>
@@ -35,10 +38,13 @@ else
 <a class="btn" href="/orgnizations/add">Add</a>
 
 @code {
+    [Parameter]
+    public int OrganizationId { get; set; }
+
     private Event[] _events;
 
     protected override async Task OnInitializedAsync()
     {
-        _events = await Http.GetJsonAsync<Event[]>("api/Events");
+        _events = await Http.GetJsonAsync<Event[]>("api/Event");
     }
 }

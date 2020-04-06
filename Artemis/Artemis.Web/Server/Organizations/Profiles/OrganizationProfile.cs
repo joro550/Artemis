@@ -4,9 +4,9 @@ using AutoMapper;
 
 namespace Artemis.Web.Server.Organizations.Profiles
 {
-    public class OrganizationProfile : Profile
+    public class EventProfile : Profile
     {
-        public OrganizationProfile()
+        public EventProfile()
         {
             CreateMap<OrganizationEntity, Organization>();
         }

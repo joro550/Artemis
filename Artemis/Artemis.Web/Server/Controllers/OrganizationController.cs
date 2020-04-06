@@ -18,10 +18,17 @@ namespace Artemis.Web.Server.Controllers
 
         [HttpGet("")]
         public async Task<List<Organization>> GetAllOrganizations() 
-            => await _mediator.Send(new GetOrganizations());
+            => await _mediator.Send(new GetOrganizations{Offset = 0, Count = 50});
 
         [HttpGet("{id}")]
         public async Task<Organization> GetOrganization(int id)
             => await _mediator.Send(new GetOrganizationById {Id = id});
+
+        [HttpPost]
+        public async Task<IActionResult> CreateOrganization(CreateOrganization org)
+        {
+            await _mediator.Publish(new CreateOrganizationNotification {Name = org.Name});
+            return Ok();
+        }
     }
 }

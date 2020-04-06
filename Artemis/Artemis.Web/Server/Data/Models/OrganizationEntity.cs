@@ -15,6 +15,6 @@ namespace Artemis.Web.Server.Data.Models
         [Required]
         public string Name { get; set; }
 
-        public List<Event> Events { get; set; }
+        public List<EventEntity> Events { get; set; }
     }
 }

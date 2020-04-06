@@ -1,0 +1,32 @@
+﻿@page "/events/create"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@using Artemis.Web.Shared.Events
+
+<EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText @bind-Value="model.Name" />
+    <InputText @bind-Value="model.Description" />
+    <InputCheckbox @bind-Value="model.IsTimedEvent" />
+
+    @if (model.IsTimedEvent)
+    {
+        <InputDate @bind-Value="model.StartDate" />
+        <InputDate @bind-Value="model.EndDate" />
+    }
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+
+@code {
+    private CreateEvent model = new CreateEvent();
+
+    private async Task HandleValidSubmit()
+    {
+        await Http.PostJsonAsync("/api/event", model);
+        Navigation.NavigateTo("/events");
+    }
+}

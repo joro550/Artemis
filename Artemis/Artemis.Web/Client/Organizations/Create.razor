@@ -1,0 +1,22 @@
+﻿@page "/organisations/create"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@using Artemis.Web.Shared.Organizations
+
+<EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="name" @bind-Value="model.Name" />
+    <button type="submit">Submit</button>
+</EditForm>
+
+@code {
+    private CreateOrganization model = new CreateOrganization();
+
+    private async Task HandleValidSubmit()
+    {
+        await Http.PostJsonAsync("/api/organization", model);
+        Navigation.NavigateTo("organisations");
+    }
+}

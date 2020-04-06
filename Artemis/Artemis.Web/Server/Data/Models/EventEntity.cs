@@ -5,7 +5,7 @@ using Artemis.Web.Shared.Events;
 namespace Artemis.Web.Server.Data.Models
 {
     [Table("Event")]
-    public class Event
+    public class EventEntity
     {
         [Key]
         [Required]

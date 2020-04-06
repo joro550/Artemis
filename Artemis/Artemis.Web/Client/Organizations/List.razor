@@ -1,6 +1,9 @@
 ﻿@page "/organisations/list"
+@page "/organisations"
+
 @inject HttpClient Http
 @inject NavigationManager Navigation
+
 @using Artemis.Web.Shared.Organizations
 
 <h1>Organizations</h1>
@@ -22,23 +25,25 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var forecast in _oganizations)
+        @foreach (var org in _oganizations)
         {
             <tr>
-                <td>@forecast.Name</td>
+                <td>
+                    <a href="/events/@org.Id">@org.Name</a>
+                </td>
             </tr>
         }
         </tbody>
     </table>
 }
 
-<a class="btn" href="/orgnizations/add">Add</a>
+<a class="btn" href="/organisations/create">Create</a>
 
 @code {
     private Organization[] _oganizations;
 
     protected override async Task OnInitializedAsync()
     {
-        _oganizations = await Http.GetJsonAsync<Organization[]>("api/Organizations");
+        _oganizations = await Http.GetJsonAsync<Organization[]>("api/Organization");
     }
 }
