@@ -13,6 +13,9 @@ namespace Artemis.Web.Server.Events.Profiles
 
             CreateMap<EventEntity, CreateEvent>()
                 .ReverseMap();
+
+            CreateMap<TimedEventEntity, CreateEvent>()
+                .ReverseMap();
         }
     }
 }

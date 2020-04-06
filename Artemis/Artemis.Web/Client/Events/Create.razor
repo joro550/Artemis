@@ -1,6 +1,8 @@
-﻿@page "/events/create"
+﻿@page "/events/create/{OrganizationId:int}"
+
 @inject HttpClient Http
 @inject NavigationManager Navigation
+
 @using Artemis.Web.Shared.Events
 
 <EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
@@ -22,11 +24,14 @@
 
 
 @code {
+    [Parameter]
+    public int OrganizationId { get; set; }
+
     private CreateEvent model = new CreateEvent();
 
     private async Task HandleValidSubmit()
     {
-        await Http.PostJsonAsync("/api/event", model);
-        Navigation.NavigateTo("/events");
+        await Http.PostJsonAsync($"/api/{OrganizationId}/event", model);
+        Navigation.NavigateTo($"/events/{OrganizationId}");
     }
 }

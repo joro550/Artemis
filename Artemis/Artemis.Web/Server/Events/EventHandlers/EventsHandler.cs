@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Artemis.Web.Server.Events.EventHandlers
 {
-    public class EventsEventHandler
+    public class EventsHandler
         : IRequestHandler<GetEvent, Event>, 
           IRequestHandler<GetEvents, List<Event>>,
           INotificationHandler<CreateEventNotification>
@@ -19,7 +19,7 @@ namespace Artemis.Web.Server.Events.EventHandlers
         private readonly IMapper _mapper;
         private readonly ApplicationDbContext _context;
 
-        public EventsEventHandler(IMapper mapper, ApplicationDbContext context)
+        public EventsHandler(IMapper mapper, ApplicationDbContext context)
         {
             _mapper = mapper;
             _context = context;
@@ -43,7 +43,10 @@ namespace Artemis.Web.Server.Events.EventHandlers
 
         public async Task Handle(CreateEventNotification notification, CancellationToken cancellationToken)
         {
-            var eventEntity = _mapper.Map<EventEntity>(notification.Event);
+            var eventEntity = notification.Event.IsTimedEvent 
+                ? _mapper.Map<TimedEventEntity>(notification.Event) 
+                : _mapper.Map<EventEntity>(notification.Event);
+
             await _context.AddAsync(eventEntity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
         }

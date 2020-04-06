@@ -21,6 +21,7 @@ else
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Description</th>
             </tr>
         </thead>
         <tbody>
@@ -35,7 +36,7 @@ else
     </table>
 }
 
-<a class="btn" href="/orgnizations/add">Add</a>
+<a class="btn" href="/events/create/@OrganizationId">Create</a>
 
 @code {
     [Parameter]
@@ -45,6 +46,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _events = await Http.GetJsonAsync<Event[]>("api/Event");
+        _events = await Http.GetJsonAsync<Event[]>($"api/{OrganizationId}/Event");
     }
 }

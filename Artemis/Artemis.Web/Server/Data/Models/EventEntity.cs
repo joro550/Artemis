@@ -18,8 +18,8 @@ namespace Artemis.Web.Server.Data.Models
         [Required]
         public string Description { get; set; }
 
-        [Required]
-        public EventType EventType { get; set; }
+        [Required] 
+        public virtual EventType EventType { get; set; } = EventType.Persistent;
 
         [Required]
         public int OrganizationId { get; set; }

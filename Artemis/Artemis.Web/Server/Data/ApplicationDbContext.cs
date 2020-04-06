@@ -26,7 +26,7 @@ namespace Artemis.Web.Server.Data
             modelBuilder.Entity<EventEntity>()
                 .HasDiscriminator(b => b.EventType)
                 .HasValue<EventEntity>(EventType.Persistent)
-                .HasValue<TimedEvent>(EventType.Timed);
+                .HasValue<TimedEventEntity>(EventType.Timed);
 
             modelBuilder.Entity<EventEntity>()
                 .HasOne<OrganizationEntity>()

@@ -28,9 +28,8 @@ namespace Artemis.Web.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEvent(int organizationId, CreateEvent model)
         {
-            await _mediator.Publish(new CreateEventNotification { });
-
-
+            model.OrganizationId = organizationId;
+            await _mediator.Publish(new CreateEventNotification {Event = model});
             return Ok();
         }
     }
