@@ -24,6 +24,6 @@ namespace Artemis.Web.Server.Data.Models
         [Required]
         public int OrganizationId { get; set; }
 
-        public EventAddressEntity Address { get; set; }
+        // public EventAddressEntity Address { get; set; }
     }
 }

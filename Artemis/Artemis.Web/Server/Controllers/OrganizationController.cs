@@ -27,7 +27,7 @@ namespace Artemis.Web.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrganization(CreateOrganization org)
         {
-            await _mediator.Publish(new CreateOrganizationNotification {Name = org.Name});
+            await _mediator.Publish(new CreateOrganizationNotification {Organization = org});
             return Ok();
         }
     }

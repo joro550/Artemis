@@ -9,6 +9,7 @@ namespace Artemis.Web.Server.Organizations.Profiles
         public EventProfile()
         {
             CreateMap<OrganizationEntity, Organization>();
+            CreateMap<CreateOrganization, OrganizationEntity>();
         }
     }
 }

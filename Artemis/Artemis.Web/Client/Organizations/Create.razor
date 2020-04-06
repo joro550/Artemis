@@ -3,13 +3,22 @@
 @inject NavigationManager Navigation
 @using Artemis.Web.Shared.Organizations
 
-<EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+    <EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-    <InputText id="name" @bind-Value="model.Name" />
-    <button type="submit">Submit</button>
-</EditForm>
+        <div class="form-group">
+            <label>Name</label>
+            <InputText class="form-control" @bind-Value="model.Name" />
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <InputTextArea class="form-control" @bind-Value="model.Description" />
+        </div>
+
+        <button class="btn" type="submit">Submit</button>
+    </EditForm>
 
 @code {
     private CreateOrganization model = new CreateOrganization();

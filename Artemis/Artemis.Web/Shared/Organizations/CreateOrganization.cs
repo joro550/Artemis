@@ -6,5 +6,8 @@ namespace Artemis.Web.Shared.Organizations
     {
         [Required]
         public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
     }
 }

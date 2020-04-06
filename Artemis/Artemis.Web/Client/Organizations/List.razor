@@ -18,23 +18,26 @@ else if (!_oganizations.Any())
 }
 else
 {
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Name</th>
-        </tr>
-        </thead>
-        <tbody>
+    <div class="row">
         @foreach (var org in _oganizations)
         {
-            <tr>
-                <td>
-                    <a href="/events/@org.Id">@org.Name</a>
-                </td>
-            </tr>
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <div class="card-title">@org.Name</div>
+                        <p class="card-text">@org.Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a href="/events/@org.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                            </div>
+                            <small class="text-muted">9 mins</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
-        </tbody>
-    </table>
+    </div>
 }
 
 <a class="btn" href="/organisations/create">Create</a>

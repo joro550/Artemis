@@ -35,6 +35,7 @@ namespace Artemis.Web.Server.Events.EventHandlers
         public async Task<List<Event>> Handle(GetEvents request, CancellationToken cancellationToken)
         {
             var @event = await _context.Set<EventEntity>()
+                .Where(entity => entity.OrganizationId == request.OrganizationId)
                 .Skip(request.Offset)
                 .Take(request.Count)
                 .ToListAsync(cancellationToken);

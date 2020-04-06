@@ -9,14 +9,36 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <InputText @bind-Value="model.Name" />
-    <InputText @bind-Value="model.Description" />
-    <InputCheckbox @bind-Value="model.IsTimedEvent" />
+    <div class="form-group">
+        <label>Name</label>
+        <InputText class="form-control" @bind-Value="model.Name" />
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <InputTextArea class="form-control" @bind-Value="model.Description" />
+    </div>
+
+    <div class="form-group row">
+        <label for="chkbox-timed-event" class="col-sm-2">Does this event have a time limit?</label>
+        <div class="col-sm-10">
+            <div class="form-check">
+                <InputCheckbox id="chkbox-timed-event" class="form-check-input" @bind-Value="model.IsTimedEvent" />
+            </div>
+        </div>
+    </div>
 
     @if (model.IsTimedEvent)
     {
-        <InputDate @bind-Value="model.StartDate" />
-        <InputDate @bind-Value="model.EndDate" />
+        <div class="form-group">
+            <label>Start Date</label>
+            <InputDate class="form-control" @bind-Value="model.StartDate" />
+        </div>
+
+        <div class="form-group">
+            <label>End Date</label>
+            <InputDate class="form-control" @bind-Value="model.EndDate" />
+        </div>
     }
 
     <button type="submit">Submit</button>
