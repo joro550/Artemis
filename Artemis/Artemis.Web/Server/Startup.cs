@@ -1,5 +1,7 @@
 using Artemis.Web.Server.Data;
 using Artemis.Web.Server.Models;
+using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -32,6 +34,9 @@ namespace Artemis.Web.Server
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
+
+            services.AddMediatR(typeof(Startup));
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddControllersWithViews();
             services.AddRazorPages();

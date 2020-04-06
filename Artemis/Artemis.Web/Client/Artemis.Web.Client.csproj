@@ -15,5 +15,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Shared\Artemis.Web.Shared.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Events\" />
+    <Folder Include="Organizations\" />
+  </ItemGroup>
 
 </Project>
