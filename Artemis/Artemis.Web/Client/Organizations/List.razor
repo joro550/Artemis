@@ -1,0 +1,44 @@
+﻿@page "/organisations/list"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@using Artemis.Web.Shared.Organizations
+
+<h1>Organizations</h1>
+
+@if (_oganizations == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!_oganizations.Any())
+{
+    <p><em>We didn't seem to find anything</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var forecast in _oganizations)
+        {
+            <tr>
+                <td>@forecast.Name</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<a class="btn" href="/orgnizations/add">Add</a>
+
+@code {
+    private Organization[] _oganizations;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _oganizations = await Http.GetJsonAsync<Organization[]>("api/Organizations");
+    }
+}

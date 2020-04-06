@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using Artemis.Web.Server.Organizations;
+using Artemis.Web.Shared.Organizations;
 
 namespace Artemis.Web.Server.Controllers
 {
@@ -6,6 +11,17 @@ namespace Artemis.Web.Server.Controllers
     [Route("/api/Organization")]
     public class OrganizationController : ControllerBase
     {
-        
+        private readonly IMediator _mediator;
+
+        public OrganizationController(IMediator mediator) 
+            => _mediator = mediator;
+
+        [HttpGet("")]
+        public async Task<List<Organization>> GetAllOrganizations() 
+            => await _mediator.Send(new GetOrganizations());
+
+        [HttpGet("{id}")]
+        public async Task<Organization> GetOrganization(int id)
+            => await _mediator.Send(new GetOrganizationById {Id = id});
     }
 }

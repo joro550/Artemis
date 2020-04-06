@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using AutoMapper;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Artemis.Web.Server.Data;
@@ -30,9 +31,14 @@ namespace Artemis.Web.Server.Organizations.EventHandlers
             return _mapper.Map<Organization>(organization ?? new OrganizationEntity());
         }
 
-        public Task<List<Organization>> Handle(GetOrganizations request, CancellationToken cancellationToken)
+        public async Task<List<Organization>> Handle(GetOrganizations request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(new List<Organization>());
+            var organization = await _context.Set<OrganizationEntity>()
+                .Skip(request.Offset)
+                .Take(request.Count)
+                .ToListAsync(cancellationToken);
+
+            return _mapper.Map<List<Organization>>(organization);
         }
     }
 }

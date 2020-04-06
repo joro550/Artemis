@@ -11,7 +11,7 @@ namespace Artemis.Web.Server.Data
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
         public DbSet<Event> Events { get; set; }
-        public DbSet<Organization> Organizations { get; set; }
+        public DbSet<OrganizationEntity> Organizations { get; set; }
 
         public ApplicationDbContext(
             DbContextOptions options,
@@ -29,7 +29,7 @@ namespace Artemis.Web.Server.Data
                 .HasValue<TimedEvent>(EventType.Timed);
 
             modelBuilder.Entity<Event>()
-                .HasOne<Organization>()
+                .HasOne<OrganizationEntity>()
                 .WithMany(organization => organization.Events)
                 .HasForeignKey(ev => ev.OrganizationId);
         }

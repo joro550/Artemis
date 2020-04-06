@@ -1,0 +1,44 @@
+﻿@page "/events/list"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@using Artemis.Web.Shared.Events
+
+<h1>Events</h1>
+@if (_events == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!_events.Any())
+{
+    <p><em>We didn't seem to find anything</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in _events)
+            {
+                <tr>
+                    <td>@e.Name</td>
+                    <td>@e.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a class="btn" href="/orgnizations/add">Add</a>
+
+@code {
+    private Event[] _events;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _events = await Http.GetJsonAsync<Event[]>("api/Events");
+    }
+}
