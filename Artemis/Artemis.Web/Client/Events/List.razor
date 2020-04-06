@@ -5,8 +5,8 @@
 @inject NavigationManager Navigation
 
 @using Artemis.Web.Shared.Events
+@using Artemis.Web.Shared.Organizations
 
-<h1>Events</h1>
 @if (_events == null)
 {
     <p><em>Loading...</em></p>
@@ -17,23 +17,39 @@ else if (!_events.Any())
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var e in _events)
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1>@_organization.Name</h1>
+            <p class="lead text-muted">@_organization.Description</p>
+            <p>
+                <a href="#" class="btn btn-primary my-2">Subscribe to specific area</a>
+                <a href="#" class="btn btn-secondary my-2">Subscribe to all events</a>
+            </p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="row">
+            @foreach (var org in _events)
             {
-                <tr>
-                    <td>@e.Name</td>
-                    <td>@e.Description</td>
-                </tr>
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <div class="card-title">@org.Name</div>
+                            <p class="card-text">@org.Description</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a class="btn btn-sm btn-outline-secondary">View</a>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                </div>
+                                <small class="text-muted">9 mins</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
+        </div>
+    </div>
 }
 
 <a class="btn" href="/events/create/@OrganizationId">Create</a>
@@ -42,10 +58,13 @@ else
     [Parameter]
     public int OrganizationId { get; set; }
 
+
+    private Organization _organization;
     private Event[] _events;
 
     protected override async Task OnInitializedAsync()
     {
+        _organization = await Http.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
         _events = await Http.GetJsonAsync<Event[]>($"api/{OrganizationId}/Event");
     }
 }
