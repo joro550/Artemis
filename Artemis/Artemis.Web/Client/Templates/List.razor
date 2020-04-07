@@ -1,36 +1,37 @@
-﻿@page "/events/list/{OrganizationId:int}"
-@page "/events/{OrganizationId:int}"
+﻿@page "/organisation/{OrganizationId}/templates"
+@page "/organization/{OrganizationId}/templates"
+@page "/organisation/{OrganizationId}/templates/list"
+@page "/organization/{OrganizationId}/templates/list"
+
+@using Artemis.Web.Shared.Organizations
+@using Artemis.Web.Shared.MessageTemplates
 
 @inject HttpClient Http
-@inject NavigationManager Navigation
 
-@using Artemis.Web.Shared.Events
-@using Artemis.Web.Shared.Organizations
+<OrgJumbotron Organization="@_organization" DisplayCallToAction="false" />
 
-<OrgJumbotron Organization="@_organization" DisplayCallToAction="true" />
-
-@if (_events == null)
+<h3>Templates</h3>
+@if (_templates == null)
 {
     <p><em>Loading...</em></p>
 }
-else if (!_events.Any())
+else if (!_templates.Any())
 {
-    <p><em>We didn't seem to find any events for this organization, please check back later</em></p>
+    <p><em>We didn't seem to find anything</em></p>
 }
 else
 {
     <div class="container">
         <div class="row">
-            @foreach (var org in _events)
+            @foreach (var org in _templates)
             {
                 <div class="col-md-4">
                     <div class="card mb-4 shadow-sm">
                         <div class="card-body">
                             <div class="card-title">@org.Name</div>
-                            <p class="card-text">@org.Description</p>
+                            <p class="card-text">@org.Text</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <a class="btn btn-sm btn-outline-secondary">View</a>
                                     <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                                 </div>
                                 <small class="text-muted">9 mins</small>
@@ -43,19 +44,16 @@ else
     </div>
 }
 
-<a class="btn" href="/events/create/@OrganizationId">Create</a>
-
 @code {
     [Parameter]
     public int OrganizationId { get; set; }
 
-
     private Organization _organization;
-    private Event[] _events;
+    private MessageTemplate[] _templates;
 
     protected override async Task OnInitializedAsync()
     {
         _organization = await Http.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
-        _events = await Http.GetJsonAsync<Event[]>($"api/{OrganizationId}/Event");
+        _templates = await Http.GetJsonAsync<MessageTemplate[]>($"api/organization/{OrganizationId}/template");
     }
 }

@@ -1,0 +1,37 @@
+﻿@using Artemis.Web.Shared.Organizations
+
+@if (Organization != null)
+{
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1>@Organization.Name</h1>
+            <p class="lead text-muted">@Organization.Description</p>
+
+            @if (DisplayCallToAction)
+            {
+                <p>
+                    <a href="#" class="btn btn-primary my-2">Subscribe to specific area</a>
+                    <a href="#" class="btn btn-secondary my-2">Subscribe to all events</a>
+                </p>
+            }
+        </div>
+    </section>
+}
+else
+{
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1><em>Please Wait</em></h1>
+            <p class="lead text-muted">...</p>
+        </div>
+    </section>
+}
+
+@code {
+    [Parameter]
+    public Organization Organization { get; set; }
+
+    [Parameter]
+    public bool DisplayCallToAction { get; set; }
+}

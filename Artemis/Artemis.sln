@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artemis.Web.Server", "Artemis.Web\Server\Artemis.Web.Server.csproj", "{85D92890-7C1E-4671-91A6-BC2EF58B9824}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Artemis.Web.Server", "Artemis.Web\Server\Artemis.Web.Server.csproj", "{85D92890-7C1E-4671-91A6-BC2EF58B9824}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artemis.Web.Client", "Artemis.Web\Client\Artemis.Web.Client.csproj", "{CA41B2A8-EDC5-43E1-8F45-068A1E812EA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Artemis.Web.Client", "Artemis.Web\Client\Artemis.Web.Client.csproj", "{CA41B2A8-EDC5-43E1-8F45-068A1E812EA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artemis.Web.Shared", "Artemis.Web\Shared\Artemis.Web.Shared.csproj", "{48AC4059-F8EA-4D34-901C-D497A55DCC38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Artemis.Web.Shared", "Artemis.Web\Shared\Artemis.Web.Shared.csproj", "{48AC4059-F8EA-4D34-901C-D497A55DCC38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

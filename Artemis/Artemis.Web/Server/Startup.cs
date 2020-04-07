@@ -36,6 +36,7 @@ namespace Artemis.Web.Server
 
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Startup));
+            services.AddTransient<DataSeeder>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
