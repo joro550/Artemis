@@ -30,6 +30,8 @@
             </div>
         </div>
     </div>
+
+    <button type="submit">Submit</button>
 </EditForm>
 
 @code {
@@ -45,6 +47,6 @@
         model.OrganizationId = OrganizationId;
 
         await Http.PostJsonAsync($"/api/{OrganizationId}/event", model);
-        Navigation.NavigateTo($"/events/{OrganizationId}");
+        Navigation.NavigateTo($"/organisation/{OrganizationId}/templates");
     }
 }

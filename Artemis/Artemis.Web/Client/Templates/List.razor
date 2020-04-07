@@ -1,7 +1,7 @@
-﻿@page "/organisation/{OrganizationId}/templates"
-@page "/organization/{OrganizationId}/templates"
-@page "/organisation/{OrganizationId}/templates/list"
-@page "/organization/{OrganizationId}/templates/list"
+﻿@page "/organisation/{OrganizationId:int}/templates"
+@page "/organization/{OrganizationId:int}/templates"
+@page "/organisation/{OrganizationId:int}/templates/list"
+@page "/organization/{OrganizationId:int}/templates/list"
 
 @using Artemis.Web.Shared.Organizations
 @using Artemis.Web.Shared.MessageTemplates
@@ -34,7 +34,6 @@ else
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                                 </div>
-                                <small class="text-muted">9 mins</small>
                             </div>
                         </div>
                     </div>
@@ -43,6 +42,8 @@ else
         </div>
     </div>
 }
+
+<a class="btn btn-primary" href="/organisations/@OrganizationId/template/create">Create</a>
 
 @code {
     [Parameter]

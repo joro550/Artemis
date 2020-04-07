@@ -1,5 +1,6 @@
 using Artemis.Web.Server.Data;
-using Artemis.Web.Server.Models;
+using Artemis.Web.Server.Users;
+using Artemis.Web.Server.Users.Models;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -8,7 +9,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Twilio;
 
 namespace Artemis.Web.Server
 {
@@ -25,7 +28,17 @@ namespace Artemis.Web.Server
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("HelpUs"));
             
+            services.AddAuthorization(options =>
+            {
+                foreach (var policy in ArtemisPolicies.GetPolicies())
+                {
+                    options.AddPolicy(policy.Name, p => p.RequireClaim(policy.Claim));
+                }
+            });
+
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
+                .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
@@ -37,6 +50,8 @@ namespace Artemis.Web.Server
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<DataSeeder>();
+
+            TwilioClient.Init("", "");
 
             services.AddControllersWithViews();
             services.AddRazorPages();

@@ -17,12 +17,14 @@ namespace Artemis.Web.Server.Events.EventHandlers
           INotificationHandler<CreateEventNotification>
     {
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
         private readonly ApplicationDbContext _context;
 
-        public EventsHandler(IMapper mapper, ApplicationDbContext context)
+        public EventsHandler(IMapper mapper, ApplicationDbContext context, IMediator mediator)
         {
             _mapper = mapper;
             _context = context;
+            _mediator = mediator;
         }
 
         public async Task<Event> Handle(GetEvent request, CancellationToken cancellationToken)
@@ -50,6 +52,7 @@ namespace Artemis.Web.Server.Events.EventHandlers
 
             await _context.AddAsync(eventEntity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
+            await _mediator.Publish(new EventCreatedNotification {Id = eventEntity.Id}, cancellationToken);
         }
     }
 }
