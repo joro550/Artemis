@@ -1,5 +1,4 @@
-﻿@page "/events/create/{OrganizationId:int}"
-@page "/organization/{OrganizationId:int}/events/create"
+﻿@page "/organization/{OrganizationId:int}/events/create"
 
 @inject HttpClient Http
 @inject NavigationManager Navigation
@@ -54,7 +53,7 @@
 
     private async Task HandleValidSubmit()
     {
-        await Http.PostJsonAsync($"/api/{OrganizationId}/event", model);
-        Navigation.NavigateTo($"/events/{OrganizationId}");
+        await Http.PostJsonAsync($"/api/organization/{OrganizationId}/event", model);
+        Navigation.NavigateTo($"/organization/{OrganizationId}/events/");
     }
 }

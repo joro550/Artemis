@@ -9,7 +9,7 @@ using CreateEvent = Artemis.Web.Shared.Events.CreateEvent;
 namespace Artemis.Web.Server.Controllers
 {
     [ApiController]
-    [Route("/api/{organizationId}/Event")]
+    [Route("/api/organization/{organizationId}/Event")]
     public class EventsController : ControllerBase
     {
         private readonly IMediator _mediator;

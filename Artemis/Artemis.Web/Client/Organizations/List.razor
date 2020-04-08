@@ -1,6 +1,6 @@
 ﻿@page "/"
-@page "/organisations/list"
-@page "/organisations"
+@page "/organizations"
+@page "/organizations/list"
 
 @inject HttpClient Http
 @inject NavigationManager Navigation
@@ -29,10 +29,8 @@ else
                         <p class="card-text">@org.Description</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
-                                <a href="/events/@org.Id" class="btn btn-sm btn-outline-secondary">View</a>
-                                
-
-                                <a href="/organisation/@org.Id/templates" class="btn btn-sm btn-outline-secondary">Message templates</a>
+                                <a href="/organization/@org.Id/events/" class="btn btn-sm btn-outline-secondary">View</a>
+                                <a href="/organization/@org.Id/templates" class="btn btn-sm btn-outline-secondary">Message templates</a>
                                 <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                             </div>
                         </div>
@@ -44,7 +42,7 @@ else
 }
 
 <AuthorizeView>
-    <a class="btn btn-primary" href="/organisations/create">Create</a>
+    <a class="btn btn-primary" href="/organizations/create">Create</a>
 </AuthorizeView>
 
 @code {

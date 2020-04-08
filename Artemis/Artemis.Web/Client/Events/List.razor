@@ -1,6 +1,5 @@
-﻿@page "/events/list/{OrganizationId:int}"
-@page "/events/{OrganizationId:int}"
-@page "/organization/{OrganizationId:int}/events/"
+﻿@page "/organization/{OrganizationId:int}/events/"
+@page "/organization/{OrganizationId:int}/events/list"
 
 @inject HttpClient Http
 @inject NavigationManager Navigation
@@ -45,7 +44,7 @@ else
 }
 
 <AuthorizeView>
-    <a class="btn btn-primary" href="/events/create/@OrganizationId">Create</a>
+    <a class="btn btn-primary" href="/organization/@OrganizationId/events/create/">Create</a>
 </AuthorizeView>
 
     @code {
@@ -59,6 +58,6 @@ else
         protected override async Task OnInitializedAsync()
         {
             _organization = await Http.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
-            _events = await Http.GetJsonAsync<Event[]>($"api/{OrganizationId}/Event");
+            _events = await Http.GetJsonAsync<Event[]>($"api/organization/{OrganizationId}/event");
         }
     }
