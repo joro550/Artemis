@@ -1,5 +1,6 @@
 ﻿@page "/events/list/{OrganizationId:int}"
 @page "/events/{OrganizationId:int}"
+@page "/organization/{OrganizationId:int}/events/"
 
 @inject HttpClient Http
 @inject NavigationManager Navigation
@@ -43,19 +44,21 @@ else
     </div>
 }
 
-<a class="btn btn-primary" href="/events/create/@OrganizationId">Create</a>
+<AuthorizeView>
+    <a class="btn btn-primary" href="/events/create/@OrganizationId">Create</a>
+</AuthorizeView>
 
-@code {
-    [Parameter]
-    public int OrganizationId { get; set; }
+    @code {
+        [Parameter]
+        public int OrganizationId { get; set; }
 
 
-    private Organization _organization;
-    private Event[] _events;
+        private Organization _organization;
+        private Event[] _events;
 
-    protected override async Task OnInitializedAsync()
-    {
-        _organization = await Http.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
-        _events = await Http.GetJsonAsync<Event[]>($"api/{OrganizationId}/Event");
+        protected override async Task OnInitializedAsync()
+        {
+            _organization = await Http.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
+            _events = await Http.GetJsonAsync<Event[]>($"api/{OrganizationId}/Event");
+        }
     }
-}
