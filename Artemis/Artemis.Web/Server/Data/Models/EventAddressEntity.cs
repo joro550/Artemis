@@ -5,7 +5,7 @@ using Artemis.Web.Shared.EventAddresses;
 namespace Artemis.Web.Server.Data.Models
 {
     [Table("EventAddress")]
-    public class EventAddressEntity
+    public abstract class EventAddressEntity
     {
         [Key]
         [Required]

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Artemis.Web.Server.Data;
 using Artemis.Web.Server.Users;
 using Artemis.Web.Server.Users.Models;
@@ -27,15 +28,6 @@ namespace Artemis.Web.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("HelpUs"));
-            
-            services.AddAuthorization(options =>
-            {
-                foreach (var policy in ArtemisPolicies.GetPolicies())
-                {
-                    options.AddPolicy(policy.Name, p => p.RequireClaim(policy.Claim));
-                }
-            });
-
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddDefaultUI()
@@ -43,6 +35,9 @@ namespace Artemis.Web.Server
 
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+
+            services.Configure<IdentityOptions>(options =>
+                options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
