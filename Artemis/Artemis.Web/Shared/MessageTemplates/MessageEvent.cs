@@ -2,6 +2,7 @@
 {
     public enum MessageEvent
     {
-        Created
+        EventCreated,
+        EventUpdated
     }
 }

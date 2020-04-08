@@ -14,6 +14,7 @@ namespace Artemis.Web.Server.Data
     {
         public DbSet<EventEntity> Events { get; set; }
         public DbSet<EmployeeEntity> Employees { get; set; }
+        public DbSet<SentMessageEntity> Messages { get; set; }
         public DbSet<OrganizationEntity> Organizations { get; set; }
         public DbSet<EventAddressEntity> EventAddresses { get; set; }
         public DbSet<UserSubscriptionEntity> Subscriptions { get; set; }
