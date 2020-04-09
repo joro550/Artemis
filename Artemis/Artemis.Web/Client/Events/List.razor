@@ -21,16 +21,16 @@ else
 {
     <div class="container">
         <div class="row">
-            @foreach (var org in _events)
+            @foreach (var evt in _events)
             {
                 <div class="col-md-4">
                     <div class="card mb-4 shadow-sm">
+                        <div class="card-header">@evt.Name</div>
                         <div class="card-body">
-                            <div class="card-title">@org.Name</div>
-                            <p class="card-text">@org.Description</p>
+                            <p class="card-text">@evt.Description</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <a class="btn btn-sm btn-outline-secondary">View</a>
+                                    <a href="/organization/@OrganizationId/events/@evt.Id" class="btn btn-sm btn-outline-secondary">View</a>
                                     <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                                 </div>
                                 <small class="text-muted">9 mins</small>
@@ -43,9 +43,9 @@ else
     </div>
 }
 
-<AuthorizeView>
+@* <AuthorizeView> *@
     <a class="btn btn-primary" href="/organization/@OrganizationId/events/create/">Create</a>
-</AuthorizeView>
+@* </AuthorizeView> *@
 
     @code {
         [Parameter]

@@ -26,9 +26,8 @@ namespace Artemis.Web.Server.Controllers
             => await _mediator.Send(new GetEvent {Id = id, OrganizationId = organizationId});
 
         [HttpPost]
-        public async Task<IActionResult> CreateEvent(int organizationId, CreateEvent model)
+        public async Task<IActionResult> CreateEvent(CreateEvent model)
         {
-            model.OrganizationId = organizationId;
             await _mediator.Publish(new CreateEventNotification {Event = model});
             return Ok();
         }

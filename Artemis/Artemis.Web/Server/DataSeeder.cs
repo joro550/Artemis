@@ -32,9 +32,6 @@ namespace Artemis.Web.Server
                     .RuleFor(entity => entity.Name, faker => faker.Company.CompanyName())
                     .RuleFor(entity => entity.Description, faker => faker.Company.Bs());
 
-
-
-
             var maxRecords = 12;
 
             foreach (var org in organizations.GenerateForever())
@@ -65,14 +62,33 @@ namespace Artemis.Web.Server
                 await _context.Events.AddAsync(@event);
                 await _context.SaveChangesAsync();
 
+                await CreateEventUpdates(@event, maxRecords);
+
                 var count = _context.Events.Count(entity => entity.OrganizationId == org.Id);
 
                 if (count >= maxRecords)
                     break;
             }
         }
+        private async Task CreateEventUpdates(EventEntity eventEntity, int maxRecords)
+        {
+            var updates = new Faker<EventUpdateEntity>()
+                .RuleFor(entity => entity.Title, faker => string.Join(" ", faker.Lorem.Words()))
+                .RuleFor(entity => entity.Message, faker => faker.Lorem.Paragraphs(3));
 
+            foreach (var update in updates.GenerateForever())
+            {
+                update.EventId = eventEntity.Id;
 
+                await _context.EventUpdate.AddAsync(update);
+                await _context.SaveChangesAsync();
+
+                var count = _context.EventUpdate.Count(entity => entity.EventId == eventEntity.Id);
+
+                if (count >= maxRecords)
+                    break;
+            }
+        }
 
         private async Task CreateTemplates(OrganizationEntity org, int maxRecords)
         {

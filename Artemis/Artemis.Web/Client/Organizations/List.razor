@@ -24,8 +24,8 @@ else
         {
             <div class="col-md-4">
                 <div class="card mb-4 shadow-sm">
+                    <div class="card-header">@org.Name</div>
                     <div class="card-body">
-                        <div class="card-title">@org.Name</div>
                         <p class="card-text">@org.Description</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
@@ -41,9 +41,9 @@ else
     </div>
 }
 
-<AuthorizeView>
+@* <AuthorizeView> *@
     <a class="btn btn-primary" href="/organizations/create">Create</a>
-</AuthorizeView>
+@* </AuthorizeView> *@
 
 @code {
     private Organization[] _oganizations;

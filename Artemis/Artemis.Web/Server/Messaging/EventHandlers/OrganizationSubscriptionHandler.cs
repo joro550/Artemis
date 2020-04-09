@@ -1,19 +1,21 @@
-﻿using System.Linq;
+﻿using MediatR;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Artemis.Web.Server.Data;
-using Artemis.Web.Server.Data.Models;
 using Artemis.Web.Server.Events;
-using Artemis.Web.Server.Users.Models;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Twilio.Rest.Api.V2010.Account;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Artemis.Web.Server.Data.Models;
+using Artemis.Web.Server.Users.Models;
+using Artemis.Web.Server.EventUpdates.Events;
 
 namespace Artemis.Web.Server.Messaging.EventHandlers
 {
     public class OrganizationSubscriptionHandler
-        : INotificationHandler<EventCreatedNotification>
+        :   INotificationHandler<EventCreatedNotification>,
+            INotificationHandler<EventUpdateCreated>
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -48,6 +50,11 @@ namespace Artemis.Web.Server.Messaging.EventHandlers
                 await _context.Set<SentMessageEntity>()
                     .AddAsync(new SentMessageEntity {MessageId = message.Sid, UserId = user.Id}, cancellationToken);
             });
+        }
+
+        public Task Handle(EventUpdateCreated notification, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
         }
     }
 }

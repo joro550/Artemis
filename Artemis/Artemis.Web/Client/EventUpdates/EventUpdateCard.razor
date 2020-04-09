@@ -1,0 +1,20 @@
+﻿@using Artemis.Web.Shared.EventUpdates
+
+<div class="card mb-3" >
+    <div class="card-header">
+        @Model.Title
+    </div>
+    <div class="card-body">
+        <p class="card-text">@Model.Message</p>
+        <a href="#" class="btn btn-primary">Go somewhere</a>
+    </div>
+    <div class="card-footer text-muted">
+        2 days ago
+    </div>
+</div>
+
+
+@code {
+    [Parameter] 
+    public EventUpdate Model { get; set; }
+}
