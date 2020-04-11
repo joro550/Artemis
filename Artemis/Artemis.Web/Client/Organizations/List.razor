@@ -4,23 +4,26 @@
 
 @inject HttpClient Http
 @inject NavigationManager Navigation
+@inject IAccessTokenProvider AuthenticationService
 
+@using Artemis.Web.Shared.Employee
 @using Artemis.Web.Shared.Organizations
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 <h1>Organizations</h1>
 
-@if (_oganizations == null)
+@if (_orgs == null)
 {
     <p><em>Loading...</em></p>
 }
-else if (!_oganizations.Any())
+else if (!_orgs.Any())
 {
     <p><em>We didn't seem to find anything</em></p>
 }
 else
 {
     <div class="row">
-        @foreach (var org in _oganizations)
+        @foreach (var org in _orgs)
         {
             <div class="col-md-4">
                 <div class="card mb-4 shadow-sm">
@@ -30,8 +33,12 @@ else
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
                                 <a href="/organization/@org.Id/events/" class="btn btn-sm btn-outline-secondary">View</a>
-                                <a href="/organization/@org.Id/templates" class="btn btn-sm btn-outline-secondary">Message templates</a>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+
+                                @if(_employeeStatuses.Any(response => response.OrganizationId == org.Id))
+                                {
+                                    <a href="/organization/@org.Id/templates" class="btn btn-sm btn-outline-secondary">Message templates</a>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -41,15 +48,30 @@ else
     </div>
 }
 
-@* <AuthorizeView> *@
+<AuthorizeView>
     <a class="btn btn-primary" href="/organizations/create">Create</a>
-@* </AuthorizeView> *@
+</AuthorizeView>
 
 @code {
-    private Organization[] _oganizations;
+    private Organization[] _orgs;
+    private EmployeeStatusResponse[] _employeeStatuses;
 
     protected override async Task OnInitializedAsync()
     {
-        _oganizations = await Http.GetJsonAsync<Organization[]>("api/Organization");
+        _orgs = await Http.GetJsonAsync<Organization[]>("api/Organization");
+
+        var tokenResult = await AuthenticationService.RequestAccessToken();
+
+        if (_orgs.Any() && tokenResult.TryGetToken(out var token))
+        {
+            var httpClient = new HttpClient { BaseAddress = new Uri(Navigation.BaseUri) };
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
+
+            _employeeStatuses = await httpClient.GetJsonAsync<EmployeeStatusResponse[]>("api/employee/status");
+        }
+        else
+        {
+            _employeeStatuses = new EmployeeStatusResponse[0];
+        }
     }
 }

@@ -1,5 +1,7 @@
 using System.Security.Claims;
+using Artemis.Web.Server.Config;
 using Artemis.Web.Server.Data;
+using Artemis.Web.Server.Messaging.Adapters;
 using Artemis.Web.Server.Users;
 using Artemis.Web.Server.Users.Models;
 using AutoMapper;
@@ -45,8 +47,10 @@ namespace Artemis.Web.Server
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<DataSeeder>();
+            services.Configure<TwilioConfig>(_configuration.GetSection("Twilio"));
 
-            TwilioClient.Init("", "");
+            services.AddTransient<MessagingClientAdapter, TwilioMessageAdapter>();
+
 
             services.AddControllersWithViews();
             services.AddRazorPages();

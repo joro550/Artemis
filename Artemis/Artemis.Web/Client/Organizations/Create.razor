@@ -1,9 +1,10 @@
 ﻿@page "/organizations/create"
 
-@inject HttpClient Http
 @inject NavigationManager Navigation
+@inject IAccessTokenProvider AuthenticationService
 
 @using Artemis.Web.Shared.Organizations
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
     <EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
@@ -27,7 +28,16 @@
 
     private async Task HandleValidSubmit()
     {
-        await Http.PostJsonAsync("/api/organization", model);
+        var httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri(Navigation.BaseUri);
+
+        var tokenResult = await AuthenticationService.RequestAccessToken();
+        if (tokenResult.TryGetToken(out var token))
+        {
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
+            await httpClient.PostJsonAsync("/api/organization", model);
+        }
+
         Navigation.NavigateTo("organisations");
     }
 }

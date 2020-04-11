@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Artemis.Web.Server.MessageTemplates;
 using Artemis.Web.Shared.MessageTemplates;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Artemis.Web.Server.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/organization/{organizationId:int}/template")]
     public class MessageTemplateController : ControllerBase

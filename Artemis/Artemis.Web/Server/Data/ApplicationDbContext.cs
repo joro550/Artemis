@@ -48,6 +48,11 @@ namespace Artemis.Web.Server.Data
                 .HasValue<LocationSubscriptionEntity>(SubscriptionType.Location)
                 .HasValue<OrganizationSubscriptionEntity>(SubscriptionType.Organization);
 
+            modelBuilder.Entity<OrganizationEntity>()
+                .HasMany<EmployeeEntity>()
+                .WithOne(entity => entity.Organization)
+                .HasForeignKey(entity => entity.OrganizationId);
+
             modelBuilder.Entity<EventAddressEntity>()
                 .HasOne<EventEntity>()
                 .WithOne(entity => entity.Address)
@@ -56,7 +61,7 @@ namespace Artemis.Web.Server.Data
             modelBuilder.Entity<EventEntity>()
                 .HasOne<OrganizationEntity>()
                 .WithMany(organization => organization.Events)
-                .HasForeignKey(ev => ev.OrganizationId);
+                .HasForeignKey(entity => entity.OrganizationId);
         }
     }
 }

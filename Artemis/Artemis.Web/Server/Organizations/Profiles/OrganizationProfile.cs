@@ -1,6 +1,6 @@
-﻿using Artemis.Web.Server.Data.Models;
+﻿using AutoMapper;
+using Artemis.Web.Server.Data.Models;
 using Artemis.Web.Shared.Organizations;
-using AutoMapper;
 
 namespace Artemis.Web.Server.Organizations.Profiles
 {

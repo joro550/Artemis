@@ -2,8 +2,9 @@
 @page "/organization/{OrganizationId:int}/events/list"
 
 @inject HttpClient Http
-@inject NavigationManager Navigation
+@inject UserUtilities UserUtilities
 
+@using Artemis.Web.Client.Users
 @using Artemis.Web.Shared.Events
 @using Artemis.Web.Shared.Organizations
 
@@ -31,7 +32,12 @@ else
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
                                     <a href="/organization/@OrganizationId/events/@evt.Id" class="btn btn-sm btn-outline-secondary">View</a>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                    <AuthorizeView>
+                                        @if (_isEmployee)
+                                        {
+                                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                        }
+                                    </AuthorizeView>
                                 </div>
                                 <small class="text-muted">9 mins</small>
                             </div>
@@ -43,21 +49,27 @@ else
     </div>
 }
 
-@* <AuthorizeView> *@
-    <a class="btn btn-primary" href="/organization/@OrganizationId/events/create/">Create</a>
-@* </AuthorizeView> *@
-
-    @code {
-        [Parameter]
-        public int OrganizationId { get; set; }
-
-
-        private Organization _organization;
-        private Event[] _events;
-
-        protected override async Task OnInitializedAsync()
-        {
-            _organization = await Http.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
-            _events = await Http.GetJsonAsync<Event[]>($"api/organization/{OrganizationId}/event");
-        }
+<AuthorizeView>
+    @if (_isEmployee)
+    {
+        <a class="btn btn-primary" href="/organization/@OrganizationId/events/create/">Create</a>
     }
+</AuthorizeView>
+
+@code {
+    [Parameter]
+    public int OrganizationId { get; set; }
+
+    private Event[] _events;
+    private bool _isEmployee;
+    private Organization _organization;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _organization = await Http.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
+        _events = await Http.GetJsonAsync<Event[]>($"api/organization/{OrganizationId}/event");
+
+        _isEmployee = await UserUtilities.IsEmployeeOfOrganization(OrganizationId);
+    }
+
+}

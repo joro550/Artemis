@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Artemis.Web.Client.Users;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +14,8 @@ namespace Artemis.Web.Client
 
             builder.Services.AddBaseAddressHttpClient();
             builder.Services.AddApiAuthorization();
+
+            builder.Services.AddTransient<UserUtilities>();
 
             await builder.Build().RunAsync();
         }

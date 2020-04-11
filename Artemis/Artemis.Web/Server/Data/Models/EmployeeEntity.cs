@@ -15,5 +15,7 @@ namespace Artemis.Web.Server.Data.Models
 
         [Required]
         public int OrganizationId { get; set; }
+
+        public OrganizationEntity Organization { get; set; }
     }
 }

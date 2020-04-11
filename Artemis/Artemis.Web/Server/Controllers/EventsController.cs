@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Artemis.Web.Server.Events;
 using Artemis.Web.Shared.Events;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using CreateEvent = Artemis.Web.Shared.Events.CreateEvent;
 
 namespace Artemis.Web.Server.Controllers
@@ -26,6 +27,7 @@ namespace Artemis.Web.Server.Controllers
             => await _mediator.Send(new GetEvent {Id = id, OrganizationId = organizationId});
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateEvent(CreateEvent model)
         {
             await _mediator.Publish(new CreateEventNotification {Event = model});

@@ -1,8 +1,10 @@
-﻿namespace Artemis.Web.Server.Organizations.Notifications
+﻿using MediatR;
+
+namespace Artemis.Web.Server.Organizations.Notifications
 {
-    public class OrganizationCreated
+    public class OrganizationCreated : INotification
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string UserId { get; set; }
     }
 }

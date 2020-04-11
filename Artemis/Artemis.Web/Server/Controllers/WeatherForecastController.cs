@@ -1,11 +1,10 @@
-﻿using Artemis.Web.Shared;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+using Artemis.Web.Shared;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Artemis.Web.Server.Controllers
 {

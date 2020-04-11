@@ -7,6 +7,7 @@ using Artemis.Web.Server.Data;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Artemis.Web.Server.Data.Models;
+using Artemis.Web.Server.Organizations.Notifications;
 using Artemis.Web.Shared.Organizations;
 
 namespace Artemis.Web.Server.Organizations.EventHandlers
@@ -17,12 +18,14 @@ namespace Artemis.Web.Server.Organizations.EventHandlers
           INotificationHandler<CreateOrganizationNotification>
     {
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
         private readonly ApplicationDbContext _context;
 
-        public OrganizationHandler(IMapper mapper, ApplicationDbContext context)
+        public OrganizationHandler(IMapper mapper, ApplicationDbContext context, IMediator mediator)
         {
             _mapper = mapper;
             _context = context;
+            _mediator = mediator;
         }
 
         public async Task<Organization> Handle(GetOrganizationById request, CancellationToken cancellationToken)
@@ -49,7 +52,8 @@ namespace Artemis.Web.Server.Organizations.EventHandlers
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            // await _mediator.Publish(new OrganizationCreated { Id = result.Entity.Id, Name = result.Entity.Name}, cancellationToken);
+            await _mediator.Publish(new OrganizationCreated {Id = result.Entity.Id, UserId = notification.UserId},
+                cancellationToken);
         }
     }
 }
