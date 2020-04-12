@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using System.Linq;
 using System.Threading.Tasks;
-using Artemis.Web.Server.Employee;
 using Artemis.Web.Shared.Events;
+using Artemis.Web.Server.Employee;
 using Artemis.Web.Shared.Organizations;
 
 namespace Artemis.Web.Server.Users.Models
