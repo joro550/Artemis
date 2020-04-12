@@ -1,11 +1,13 @@
-﻿@page "/organization/{OrganizationId:int}/events/{evenId:int}/update/create"
+﻿@page "/organization/{OrganizationId:int}/events/{EventId:int}/update/create"
 
 @inject NavigationManager Navigation
 @inject IAccessTokenProvider AuthenticationService
 
-@using Artemis.Web.Shared.Events
 @using Artemis.Web.Shared.EventUpdates
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@attribute [Authorize]
 
 <EditForm Model="@_model" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
@@ -15,12 +17,12 @@
     <input type="hidden" @bind="_model.EventId" />
 
     <div class="form-group">
-        <label>Name</label>
+        <label>Title</label>
         <InputText class="form-control" @bind-Value="_model.Title" />
     </div>
 
     <div class="form-group">
-        <label>Description</label>
+        <label>Message</label>
         <InputTextArea class="form-control" @bind-Value="_model.Message" />
     </div>
     <button type="submit">Submit</button>
@@ -52,8 +54,7 @@
         if (tokenResult.TryGetToken(out var token))
         {
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
-            await httpClient.PostJsonAsync($"/api/organization/{OrganizationId}/event/update", _model);
-
+            await httpClient.PostJsonAsync($"/api/organization/{OrganizationId}/event/{EventId}/update", _model);
         }
         Navigation.NavigateTo($"/organization/{OrganizationId}/events/");
     }

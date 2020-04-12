@@ -36,7 +36,7 @@ else
 
                                 @if(_employeeStatuses.Any(response => response.OrganizationId == org.Id))
                                 {
-                                    <a href="/organization/@org.Id/templates" class="btn btn-sm btn-outline-secondary">Message templates</a>
+                                    <a href="/organizations/@org.Id/templates" class="btn btn-sm btn-outline-secondary">Message templates</a>
                                     <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                                 }
                             </div>
@@ -47,10 +47,6 @@ else
         }
     </div>
 }
-
-<AuthorizeView>
-    <a class="btn btn-primary" href="/organizations/create">Create</a>
-</AuthorizeView>
 
 @code {
     private Organization[] _orgs;

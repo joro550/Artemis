@@ -23,8 +23,12 @@ namespace Artemis.Web.Server.Messaging.EventHandlers
 
         public async Task Handle(EventUpdateCreated notification, CancellationToken cancellationToken)
         {
-            var eventEntity = await Context.Set<EventEntity>()
+            var eventUpdateEntity = await Context.Set<EventUpdateEntity>()
                 .FirstOrDefaultAsync(entity => entity.Id == notification.Id, cancellationToken);
+
+            var eventEntity = await Context.Set<EventEntity>()
+                .FirstOrDefaultAsync(entity => entity.Id == eventUpdateEntity.EventId, cancellationToken);
+
             await SendMessagesFor(eventEntity, MessageEvent.EventUpdateCreated, cancellationToken);
         }
     }

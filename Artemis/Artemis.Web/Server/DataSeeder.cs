@@ -3,22 +3,31 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Artemis.Web.Server.Data;
+using Artemis.Web.Server.Config;
 using Artemis.Web.Shared.Events;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Identity;
 using Artemis.Web.Server.Data.Models;
+using Artemis.Web.Server.Users.Models;
 using Artemis.Web.Shared.MessageTemplates;
 
 namespace Artemis.Web.Server
 {
     public class DataSeeder
     {
+        private readonly UserConfig _userConfig;
         private readonly ApplicationDbContext _context;
         private readonly IHostEnvironment _environment;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public DataSeeder(ApplicationDbContext context, IHostEnvironment environment)
+        public DataSeeder(ApplicationDbContext context, IHostEnvironment environment, 
+            UserManager<ApplicationUser> userManager, IOptions<UserConfig> userConfig)
         {
             _context = context;
             _environment = environment;
+            _userManager = userManager;
+            _userConfig = userConfig.Value;
         }
 
         public async Task Plant()
@@ -28,6 +37,9 @@ namespace Artemis.Web.Server
 
             Randomizer.Seed = new Random(8675309);
 
+            await _userManager.CreateAsync( password: "Ii!62s9cVB&%^hF8",
+                user: new ApplicationUser {Email = "user@email.com", PhoneNumber = _userConfig.PhoneNumber, UserName = "user@email.com"});
+            
             var organizations = new Faker<OrganizationEntity>()
                     .RuleFor(entity => entity.Name, faker => faker.Company.CompanyName())
                     .RuleFor(entity => entity.Description, faker => faker.Company.Bs());

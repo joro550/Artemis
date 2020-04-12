@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using MediatR;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 using Artemis.Web.Server.Users.Models;
 using Artemis.Web.Shared.Organizations;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Artemis.Web.Server.Organizations.Controllers
 {
     [ApiController]
-    [Route("/api/Organization")]
+    [Route("/api/organization")]
     public class OrganizationController : ControllerBase
     {
         private readonly IMediator _mediator;

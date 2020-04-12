@@ -32,7 +32,7 @@ namespace Artemis.Web.Server.MessageTemplates.Controllers
             => await _mediator.Send(new GetMessageTemplate {Id = templateId, OrganizationId = organizationId});
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        // [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateTemplate(CreateMessageTemplate model)
         {
             var organization = await _mediator.Send(new GetOrganizationById { Id = model.OrganizationId });

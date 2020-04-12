@@ -46,6 +46,7 @@ namespace Artemis.Web.Server
                 .AddIdentityServerJwt();
 
             services.Configure<TwilioConfig>(_configuration.GetSection("Twilio"));
+            services.Configure<UserConfig>(_configuration.GetSection("User"));
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<DataSeeder>();

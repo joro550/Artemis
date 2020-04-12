@@ -1,12 +1,11 @@
-﻿@page "/organization/{OrganizationId:int}/templates"
-@page "/organization/{OrganizationId:int}/templates/list"
+﻿@page "/organizations/{OrganizationId:int}/templates/list"
+@page "/organizations/{OrganizationId:int}/templates"
 
 @using Artemis.Web.Shared.Organizations
 @using Microsoft.AspNetCore.Authorization
 @using Artemis.Web.Shared.MessageTemplates
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
-@inject HttpClient Http
 @inject NavigationManager Navigation
 @inject IAccessTokenProvider AuthenticationService
 
@@ -47,7 +46,9 @@ else
     </div>
 }
 
-<a class="btn btn-primary" href="/organisations/@OrganizationId/template/create">Create</a>
+<AuthorizeView>
+    <a class="btn btn-primary" href="/organizations/@OrganizationId/template/create">Create</a>
+</AuthorizeView>
 
 @code {
     [Parameter]
@@ -64,8 +65,8 @@ else
         if (tokenResult.TryGetToken(out var token))
         {
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
-            _organization = await Http.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
-            _templates = await Http.GetJsonAsync<MessageTemplate[]>($"api/organization/{OrganizationId}/template");
+            _organization = await httpClient.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
+            _templates = await httpClient.GetJsonAsync<MessageTemplate[]>($"api/organization/{OrganizationId}/template");
         }
         else
         {

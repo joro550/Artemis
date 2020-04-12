@@ -20,32 +20,30 @@ else if (!_events.Any())
 }
 else
 {
-    <div class="container">
-        <div class="row">
-            @foreach (var evt in _events)
-            {
-                <div class="col-md-4">
-                    <div class="card mb-4 shadow-sm">
-                        <div class="card-header">@evt.Name</div>
-                        <div class="card-body">
-                            <p class="card-text">@evt.Description</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <a href="/organization/@OrganizationId/events/@evt.Id" class="btn btn-sm btn-outline-secondary">View</a>
-                                    <AuthorizeView>
-                                        @if (_isEmployee)
-                                        {
-                                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                        }
-                                    </AuthorizeView>
-                                </div>
-                                <small class="text-muted">9 mins</small>
+    <div class="row">
+        @foreach (var evt in _events)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header">@evt.Name</div>
+                    <div class="card-body">
+                        <p class="card-text">@evt.Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a href="/organization/@OrganizationId/events/@evt.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                                <AuthorizeView>
+                                    @if (_isEmployee)
+                                    {
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                    }
+                                </AuthorizeView>
                             </div>
+                            <small class="text-muted">9 mins</small>
                         </div>
                     </div>
                 </div>
-            }
-        </div>
+            </div>
+        }
     </div>
 }
 
