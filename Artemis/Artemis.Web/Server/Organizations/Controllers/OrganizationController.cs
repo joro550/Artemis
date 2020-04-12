@@ -1,14 +1,13 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
 using Artemis.Web.Server.Users.Models;
-using Artemis.Web.Server.Organizations;
 using Artemis.Web.Shared.Organizations;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Artemis.Web.Server.Controllers
+namespace Artemis.Web.Server.Organizations.Controllers
 {
     [ApiController]
     [Route("/api/Organization")]

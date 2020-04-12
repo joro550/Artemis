@@ -19,15 +19,18 @@ namespace Artemis.Web.Server.Users.Models
             _mediator = mediator;
         }
 
-        public async Task<bool> CanCreateEventFor(Organization organization)
-        {
-            var employees = await _mediator.Send(new GetEmployees {OrganizationId = organization.Id});
-            return employees.Any(emp => emp.UserId == User.Id);
-        }
+        public async Task<bool> CanCreateEventFor(Organization organization) 
+            => await IsEmployee(organization.Id);
 
-        public async Task<bool> CanCreateUpdateFor(Event eventId)
+        public async Task<bool> CanCreateUpdateFor(Event eventId) 
+            => await IsEmployee(eventId.OrganizationId);
+
+        public async Task<bool> CanCreateTemplatesFor(Organization organization)
+            => await IsEmployee(organization.Id);
+
+        private async Task<bool> IsEmployee(int organizationId)
         {
-            var employees = await _mediator.Send(new GetEmployees { OrganizationId = eventId.OrganizationId });
+            var employees = await _mediator.Send(new GetEmployees {OrganizationId = organizationId});
             return employees.Any(emp => emp.UserId == User.Id);
         }
     }

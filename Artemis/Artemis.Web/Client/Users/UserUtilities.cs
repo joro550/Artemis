@@ -22,13 +22,13 @@ namespace Artemis.Web.Client.Users
         public async Task<bool> IsEmployeeOfOrganization(int organizationId)
         {
             var tokenResult = await _authenticationService.RequestAccessToken();
-
-            if (!tokenResult.TryGetToken(out var token)) return false;
+            if (!tokenResult.TryGetToken(out var token)) 
+                return false;
 
             var httpClient = new HttpClient { BaseAddress = new Uri(_navigation.BaseUri) };
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
 
-            var statuses = await httpClient.GetJsonAsync<EmployeeStatusResponse[]>("api/employee");
+            var statuses = await httpClient.GetJsonAsync<EmployeeStatusResponse[]>("api/employee/status");
             return statuses.Any(response => response.OrganizationId == organizationId);
         }
     }

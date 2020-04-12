@@ -1,14 +1,13 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using Artemis.Web.Shared.Employee;
-using Artemis.Web.Server.Employee;
-using Microsoft.AspNetCore.Identity;
 using Artemis.Web.Server.Users.Models;
+using Artemis.Web.Shared.Employee;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Artemis.Web.Server.Controllers
+namespace Artemis.Web.Server.Employee.Controllers
 {
     [ApiController]
     [Route("api/employee")]

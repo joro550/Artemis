@@ -1,12 +1,16 @@
-﻿@page "/organisation/{OrganizationId:int}/templates"
-@page "/organization/{OrganizationId:int}/templates"
-@page "/organisation/{OrganizationId:int}/templates/list"
+﻿@page "/organization/{OrganizationId:int}/templates"
 @page "/organization/{OrganizationId:int}/templates/list"
 
 @using Artemis.Web.Shared.Organizations
+@using Microsoft.AspNetCore.Authorization
 @using Artemis.Web.Shared.MessageTemplates
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @inject HttpClient Http
+@inject NavigationManager Navigation
+@inject IAccessTokenProvider AuthenticationService
+
+@attribute [Authorize]
 
 <OrgJumbotron Organization="@_organization" DisplayCallToAction="false" />
 
@@ -54,7 +58,18 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _organization = await Http.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
-        _templates = await Http.GetJsonAsync<MessageTemplate[]>($"api/organization/{OrganizationId}/template");
+        var httpClient = new HttpClient {BaseAddress = new Uri(Navigation.BaseUri)};
+
+        var tokenResult = await AuthenticationService.RequestAccessToken();
+        if (tokenResult.TryGetToken(out var token))
+        {
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
+            _organization = await Http.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
+            _templates = await Http.GetJsonAsync<MessageTemplate[]>($"api/organization/{OrganizationId}/template");
+        }
+        else
+        {
+            Navigation.NavigateTo("organizations");    
+        }
     }
 }

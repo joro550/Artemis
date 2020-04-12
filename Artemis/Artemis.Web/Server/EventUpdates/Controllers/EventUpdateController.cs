@@ -1,16 +1,13 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using Artemis.Web.Server.Events;
-using Artemis.Web.Server.EventUpdates;
 using Artemis.Web.Server.Users;
-using Artemis.Web.Server.Users.Models;
 using Artemis.Web.Shared.EventUpdates;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Artemis.Web.Server.Controllers
+namespace Artemis.Web.Server.EventUpdates.Controllers
 {
     [ApiController]
     [Route("api/organization/{organizationId:int}/event/{eventId:int}/update")]

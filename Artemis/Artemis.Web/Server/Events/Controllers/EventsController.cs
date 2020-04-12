@@ -1,17 +1,14 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Artemis.Web.Server.Events;
-using Artemis.Web.Shared.Events;
-using System.Collections.Generic;
 using Artemis.Web.Server.Organizations;
 using Artemis.Web.Server.Users;
-using Artemis.Web.Server.Users.Models;
+using Artemis.Web.Shared.Events;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using CreateEvent = Artemis.Web.Shared.Events.CreateEvent;
 
-namespace Artemis.Web.Server.Controllers
+namespace Artemis.Web.Server.Events.Controllers
 {
     [ApiController]
     [Route("/api/organization/{organizationId}/Event")]

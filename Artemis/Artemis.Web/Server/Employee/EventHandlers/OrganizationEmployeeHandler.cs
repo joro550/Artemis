@@ -14,6 +14,7 @@ namespace Artemis.Web.Server.Employee.EventHandlers
 {
     public class OrganizationEmployeeHandler
         :   INotificationHandler<OrganizationCreated>,
+            IRequestHandler<GetEmployees, List<EmployeeStatusResponse>>,
             IRequestHandler<GetEmployeeStatus, List<EmployeeStatusResponse>>
     {
         private readonly IMapper _mapper;
@@ -36,6 +37,14 @@ namespace Artemis.Web.Server.Employee.EventHandlers
         {
             var employeeStatus = await _context.Set<EmployeeEntity>()
                 .Where(entity => entity.UserId == request.UserId)
+                .ToListAsync(cancellationToken);
+            return _mapper.Map<List<EmployeeStatusResponse>>(employeeStatus);
+        }
+
+        public async Task<List<EmployeeStatusResponse>> Handle(GetEmployees request, CancellationToken cancellationToken)
+        {
+            var employeeStatus = await _context.Set<EmployeeEntity>()
+                .Where(entity => entity.OrganizationId == request.OrganizationId)
                 .ToListAsync(cancellationToken);
             return _mapper.Map<List<EmployeeStatusResponse>>(employeeStatus);
         }

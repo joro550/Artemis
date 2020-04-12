@@ -1,13 +1,12 @@
-﻿using MediatR;
-using System.Threading.Tasks;
-using Artemis.Web.Server.Subscriptions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
+﻿using System.Threading.Tasks;
 using Artemis.Web.Server.Users.Models;
 using Artemis.Web.Shared.Subscriptions;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Artemis.Web.Server.Controllers
+namespace Artemis.Web.Server.Subscriptions.Controllers
 {
     [Authorize]
     [ApiController]

@@ -1,9 +1,10 @@
 ﻿@page "/organisations/{OrganizationId:int}/template/create"
 @using Artemis.Web.Shared.MessageTemplates
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @inject HttpClient Http
 @inject NavigationManager Navigation
-
+@inject IAccessTokenProvider AuthenticationService
 
 <h3>Create Template</h3>
 
@@ -30,6 +31,13 @@
             </div>
         </div>
     </div>
+    
+    <InputSelect @bind-Value="model.MessageEvent" class="form-control">
+        @foreach( var foo in Enum.GetValues(typeof(MessageEvent)) )
+        {
+            <option value="@foo">@foo.ToString()</option>
+        }
+    </InputSelect>
 
     <button type="submit">Submit</button>
 </EditForm>
@@ -46,7 +54,15 @@
     {
         model.OrganizationId = OrganizationId;
 
-        await Http.PostJsonAsync($"/api/{OrganizationId}/event", model);
+        var httpClient = new HttpClient {BaseAddress = new Uri(Navigation.BaseUri)};
+
+        var tokenResult = await AuthenticationService.RequestAccessToken();
+        if (tokenResult.TryGetToken(out var token))
+        {
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}"); 
+            await Http.PostJsonAsync($"/api/organization/{OrganizationId}/template", model);
+        }
+
         Navigation.NavigateTo($"/organisation/{OrganizationId}/templates");
     }
 }

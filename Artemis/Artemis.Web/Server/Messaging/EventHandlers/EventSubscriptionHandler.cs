@@ -1,28 +1,31 @@
-﻿using System.Threading;
+﻿using MediatR;
+using System.Threading;
 using System.Threading.Tasks;
 using Artemis.Web.Server.Data;
-using Artemis.Web.Server.EventUpdates.Events;
-using Artemis.Web.Server.Users.Models;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Artemis.Web.Server.Data.Models;
+using Artemis.Web.Server.Users.Models;
+using Artemis.Web.Shared.MessageTemplates;
+using Artemis.Web.Server.EventUpdates.Events;
+using Artemis.Web.Server.Messaging.Adapters;
 
 namespace Artemis.Web.Server.Messaging.EventHandlers
 {
     public class EventSubscriptionHandler
-        :   INotificationHandler<EventUpdateCreated>
+        :   SubscriptionHandler,
+            INotificationHandler<EventUpdateCreated>
     {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-
-        public EventSubscriptionHandler(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public EventSubscriptionHandler(ApplicationDbContext context, UserManager<ApplicationUser> userManager, MessagingClientAdapter messageClient) 
+            : base(context, userManager, messageClient)
         {
-            _context = context;
-            _userManager = userManager;
         }
 
-        public Task Handle(EventUpdateCreated notification, CancellationToken cancellationToken)
+        public async Task Handle(EventUpdateCreated notification, CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            var eventEntity = await Context.Set<EventEntity>()
+                .FirstOrDefaultAsync(entity => entity.Id == notification.Id, cancellationToken);
+            await SendMessagesFor(eventEntity, MessageEvent.EventUpdateCreated, cancellationToken);
         }
     }
 }

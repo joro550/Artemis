@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+﻿using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Artemis.Web.Server.Controllers
+namespace Artemis.Web.Server.Users.Controllers
 {
     public class OidcConfigurationController : Controller
     {

@@ -52,7 +52,7 @@
         if (tokenResult.TryGetToken(out var token))
         {
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
-            await httpClient.PostJsonAsync($"/api/organization/{OrganizationId}/event", _model);
+            await httpClient.PostJsonAsync($"/api/organization/{OrganizationId}/event/update", _model);
 
         }
         Navigation.NavigateTo($"/organization/{OrganizationId}/events/");
