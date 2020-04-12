@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Artemis.Web.Server.Events;
 using Artemis.Web.Shared.Events;
 using System.Collections.Generic;
+using Artemis.Web.Server.Organizations;
+using Artemis.Web.Server.Users.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using CreateEvent = Artemis.Web.Shared.Events.CreateEvent;
 
 namespace Artemis.Web.Server.Controllers
@@ -14,8 +17,13 @@ namespace Artemis.Web.Server.Controllers
     public class EventsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public EventsController(IMediator mediator) 
-            => _mediator = mediator;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public EventsController(IMediator mediator, UserManager<ApplicationUser> userManager)
+        {
+            _mediator = mediator;
+            _userManager = userManager;
+        }
 
         [HttpGet]
         public async Task<List<Event>> GetEventsForOrganization(int organizationId)
@@ -30,6 +38,16 @@ namespace Artemis.Web.Server.Controllers
         [Authorize]
         public async Task<IActionResult> CreateEvent(CreateEvent model)
         {
+            var organization = await _mediator.Send(new GetOrganizationById { Id = model.OrganizationId});
+            if (organization == null)
+                return BadRequest();
+
+            var user = await _userManager.GetUserAsync(User);
+            var canCreateEvent = await user.CanCreateEventFor(organization);
+
+            if (!canCreateEvent)
+                return Unauthorized();
+
             await _mediator.Publish(new CreateEventNotification {Event = model});
             return Ok();
         }

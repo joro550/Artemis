@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Artemis.Web.Server.Config;
 using Artemis.Web.Server.Data;
+using Artemis.Web.Server.Employee;
 using Artemis.Web.Server.Messaging.Adapters;
 using Artemis.Web.Server.Users;
 using Artemis.Web.Server.Users.Models;
@@ -44,10 +45,11 @@ namespace Artemis.Web.Server
             services.AddAuthentication()
                 .AddIdentityServerJwt();
 
+            services.Configure<TwilioConfig>(_configuration.GetSection("Twilio"));
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<DataSeeder>();
-            services.Configure<TwilioConfig>(_configuration.GetSection("Twilio"));
+            services.AddTransient<ThingThing>();
 
             services.AddTransient<MessagingClientAdapter, TwilioMessageAdapter>();
 
