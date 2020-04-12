@@ -33,7 +33,7 @@ namespace Artemis.Web.Server.Messaging.EventHandlers
                 return;
 
             var subscriptions = await GetSubscriptionsForEvent(organizationId, cancellationToken);
-            SendMessagesToSubscriptions(subscriptions, messageTemplate, cancellationToken);
+            await SendMessagesToSubscriptions(subscriptions, messageTemplate, cancellationToken);
         }
 
         protected async Task SendMessagesFor(EventEntity eventEntity, MessageEvent messageEvent, CancellationToken cancellationToken)
@@ -43,7 +43,7 @@ namespace Artemis.Web.Server.Messaging.EventHandlers
                 return;
 
             var subscriptions = await GetSubscriptionsForEvent(eventEntity, cancellationToken);
-            SendMessagesToSubscriptions(subscriptions, messageTemplate, cancellationToken);
+            await SendMessagesToSubscriptions(subscriptions, messageTemplate, cancellationToken);
         }
 
         private async Task<MessageTemplateEntity> GetMessageTemplate(int organizationId, MessageEvent messageEvent, CancellationToken cancellationToken) =>
@@ -67,20 +67,20 @@ namespace Artemis.Web.Server.Messaging.EventHandlers
                 .ToListAsync(cancellationToken);
         }
 
-        private void SendMessagesToSubscriptions(IEnumerable<OrganizationSubscriptionEntity> subscriptions,
+        private async Task SendMessagesToSubscriptions(IEnumerable<OrganizationSubscriptionEntity> subscriptions,
             MessageTemplateEntity messageTemplate, CancellationToken cancellationToken)
         {
-            Parallel.ForEach(subscriptions, async (sub) =>
+            foreach (var subscription in subscriptions)
             {
-                var user = await _userManager.Users.Where(u => u.Id == sub.UserId)
+                var user = await _userManager.Users.Where(u => u.Id == subscription.UserId)
                     .SingleOrDefaultAsync(cancellationToken);
-
+                
                 var result = await _messageClient.SendMessage(to: user.PhoneNumber,
                     message: messageTemplate.Text);
 
                 await Context.Set<SentMessageEntity>()
-                    .AddAsync(new SentMessageEntity {MessageId = result, UserId = user.Id}, cancellationToken);
-            });
+                    .AddAsync(new SentMessageEntity { MessageId = result, UserId = user.Id }, cancellationToken);
+            }
         }
     }
 }

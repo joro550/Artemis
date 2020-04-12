@@ -37,8 +37,10 @@ namespace Artemis.Web.Server
 
             Randomizer.Seed = new Random(8675309);
 
-            await _userManager.CreateAsync( password: "Ii!62s9cVB&%^hF8",
-                user: new ApplicationUser {Email = "user@email.com", PhoneNumber = _userConfig.PhoneNumber, UserName = "user@email.com"});
+            await _userManager.CreateAsync(password: "Ii!62s9cVB&%^hF8",
+                user: new ApplicationUser {Email = "user@email.com", PhoneNumber = _userConfig.PhoneNumber, UserName = "user@email.com", EmailConfirmed = true,PhoneNumberConfirmed = true});
+
+            var user = await _userManager.FindByEmailAsync("user@email.com");
             
             var organizations = new Faker<OrganizationEntity>()
                     .RuleFor(entity => entity.Name, faker => faker.Company.CompanyName())
@@ -50,6 +52,8 @@ namespace Artemis.Web.Server
             {
                 await _context.Organizations.AddAsync(org);
                 await _context.SaveChangesAsync();
+
+                await _context.Employees.AddAsync(new EmployeeEntity {OrganizationId = org.Id, UserId = user.Id});
 
                 await CreateEvents(org, maxRecords);
                 await CreateTemplates(org, maxRecords);
