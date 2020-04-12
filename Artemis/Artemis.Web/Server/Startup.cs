@@ -49,7 +49,7 @@ namespace Artemis.Web.Server
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<DataSeeder>();
-            services.AddTransient<ThingThing>();
+            services.AddTransient<UserAdapter>();
 
             services.AddTransient<MessagingClientAdapter, TwilioMessageAdapter>();
 

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Artemis.Web.Server.Events;
 using Artemis.Web.Server.EventUpdates;
+using Artemis.Web.Server.Users;
 using Artemis.Web.Server.Users.Models;
 using Artemis.Web.Shared.EventUpdates;
 using Microsoft.AspNetCore.Authorization;
@@ -16,9 +17,9 @@ namespace Artemis.Web.Server.Controllers
     public class EventUpdateController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserAdapter _userManager;
 
-        public EventUpdateController(IMediator mediator, UserManager<ApplicationUser> userManager)
+        public EventUpdateController(IMediator mediator, UserAdapter userManager)
         {
             _mediator = mediator;
             _userManager = userManager;

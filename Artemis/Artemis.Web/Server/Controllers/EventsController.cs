@@ -5,6 +5,7 @@ using Artemis.Web.Server.Events;
 using Artemis.Web.Shared.Events;
 using System.Collections.Generic;
 using Artemis.Web.Server.Organizations;
+using Artemis.Web.Server.Users;
 using Artemis.Web.Server.Users.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,9 +18,9 @@ namespace Artemis.Web.Server.Controllers
     public class EventsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserAdapter _userManager;
 
-        public EventsController(IMediator mediator, UserManager<ApplicationUser> userManager)
+        public EventsController(IMediator mediator, UserAdapter userManager)
         {
             _mediator = mediator;
             _userManager = userManager;
