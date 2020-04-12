@@ -38,7 +38,19 @@ else
                                     }
                                 </AuthorizeView>
                             </div>
-                            <small class="text-muted">9 mins</small>
+                            @if (evt is TimedEvent timedEvent)
+                            {
+                                
+                                var timeLeft = DateTime.Now.Subtract(timedEvent.EndDate);
+                                if (timeLeft.Days < 1)
+                                {
+                                    <small class="text-muted">@timeLeft.ToString("g") left</small>
+                                }
+                                else
+                                {
+                                    <small class="text-muted">@timeLeft.Days days left</small>
+                                }
+                            }
                         </div>
                     </div>
                 </div>
