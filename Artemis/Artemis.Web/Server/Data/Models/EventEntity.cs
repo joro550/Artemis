@@ -16,13 +16,16 @@ namespace Artemis.Web.Server.Data.Models
         public string Name { get; set; }
 
         [Required]
-        public string Description { get; set; }
+        public bool IsPublished { get; set; }
 
-        [Required] 
-        public virtual EventType EventType { get; set; } = EventType.Persistent;
+        [Required]
+        public string Description { get; set; }
 
         [Required]
         public int OrganizationId { get; set; }
+
+        [Required] 
+        public virtual EventType EventType { get; set; } = EventType.Persistent;
 
         public EventAddressEntity Address { get; set; }
     }

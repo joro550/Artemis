@@ -23,38 +23,41 @@ else
     <div class="row">
         @foreach (var evt in _events)
         {
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header">@evt.Name</div>
-                    <div class="card-body">
-                        <p class="card-text">@evt.Description</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <a href="/organization/@OrganizationId/events/@evt.Id" class="btn btn-sm btn-outline-secondary">View</a>
-                                <AuthorizeView>
-                                    @if (_isEmployee)
+            if (evt.IsPublished || _isEmployee)
+            {
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header">@evt.Name</div>
+                        <div class="card-body">
+                            <p class="card-text">@evt.Description</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a href="/organization/@OrganizationId/events/@evt.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                                    <AuthorizeView>
+                                        @if (_isEmployee)
+                                        {
+                                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                        }
+                                    </AuthorizeView>
+                                </div>
+                                @if (evt is TimedEvent timedEvent)
+                                {
+
+                                    var timeLeft = DateTime.Now.Subtract(timedEvent.EndDate);
+                                    if (timeLeft.Days < 1)
                                     {
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                        <small class="text-muted">@timeLeft.ToString("g") left</small>
                                     }
-                                </AuthorizeView>
+                                    else
+                                    {
+                                        <small class="text-muted">@timeLeft.Days days left</small>
+                                    }
+                                }
                             </div>
-                            @if (evt is TimedEvent timedEvent)
-                            {
-                                
-                                var timeLeft = DateTime.Now.Subtract(timedEvent.EndDate);
-                                if (timeLeft.Days < 1)
-                                {
-                                    <small class="text-muted">@timeLeft.ToString("g") left</small>
-                                }
-                                else
-                                {
-                                    <small class="text-muted">@timeLeft.Days days left</small>
-                                }
-                            }
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         }
     </div>
 }

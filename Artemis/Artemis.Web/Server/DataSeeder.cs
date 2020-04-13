@@ -43,6 +43,7 @@ namespace Artemis.Web.Server
             var user = await _userManager.FindByEmailAsync("user@email.com");
             
             var organizations = new Faker<OrganizationEntity>()
+                    .RuleFor(entity => entity.IsPublished, faker => true)
                     .RuleFor(entity => entity.Name, faker => faker.Company.CompanyName())
                     .RuleFor(entity => entity.Description, faker => faker.Company.Bs());
 
@@ -68,6 +69,7 @@ namespace Artemis.Web.Server
         private async Task CreateEvents(OrganizationEntity org, int maxRecords)
         {
             var events = new Faker<EventEntity>()
+                .RuleFor(entity => entity.IsPublished, faker => true)
                 .RuleFor(entity => entity.Name, faker => faker.Lorem.Lines(1))
                 .RuleFor(entity => entity.Description, faker => faker.Lorem.Paragraph())
                 .RuleFor(entity => entity.EventType, faker => faker.Random.Enum<EventType>());

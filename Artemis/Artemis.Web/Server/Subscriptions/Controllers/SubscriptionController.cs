@@ -23,7 +23,7 @@ namespace Artemis.Web.Server.Subscriptions.Controllers
         }
 
         [HttpPost("location")]
-        public async Task<IActionResult> CreateSubscriptionBasedOnLocation(LocationSubscriptionRequest request)
+        public async Task<LocationSubscriptionResult> CreateSubscriptionBasedOnLocation(LocationSubscriptionRequest request)
         {
             var user = await _userManager.GetUserAsync(User);
             await _mediator.Publish(new CreateLocationSubscription
@@ -32,11 +32,11 @@ namespace Artemis.Web.Server.Subscriptions.Controllers
                 OrganizationId = request.OrganizationId
             });
 
-            return Ok();
+            return new LocationSubscriptionResult {Success = true};
         }
 
         [HttpPost("organization")]
-        public async Task<IActionResult> CreateSubscriptionToOrganization(OrganizationSubscriptionRequest request)
+        public async Task<OrganizationSubscriptionResult> CreateSubscriptionToOrganization(OrganizationSubscriptionRequest request)
         {
             var user = await _userManager.GetUserAsync(User);
             await _mediator.Publish(new CreateOrganizationSubscription
@@ -44,11 +44,11 @@ namespace Artemis.Web.Server.Subscriptions.Controllers
                 UserId = user.Id,
                 OrganizationId = request.OrganizationId
             });
-            return Ok();
+            return new OrganizationSubscriptionResult {Success = true};
         }
 
         [HttpPost("event")]
-        public async Task<IActionResult> CreateSubscriptionToEvent(EventSubscriptionRequest request)
+        public async Task<EventSubscriptionResult> CreateSubscriptionToEvent(EventSubscriptionRequest request)
         {
             var user = await _userManager.GetUserAsync(User);
             await _mediator.Publish(new CreateEventSubscription
@@ -56,7 +56,7 @@ namespace Artemis.Web.Server.Subscriptions.Controllers
                 UserId = user.Id,
                 EventId = request.EventId
             });
-            return Ok();
+            return new EventSubscriptionResult{Success = true};
         }
     }
 }
