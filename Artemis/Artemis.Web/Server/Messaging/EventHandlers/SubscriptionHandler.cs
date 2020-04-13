@@ -33,7 +33,8 @@ namespace Artemis.Web.Server.Messaging.EventHandlers
                 return;
 
             var subscriptions = await GetSubscriptionsForEvent(organizationId, cancellationToken);
-            await SendMessagesToSubscriptions(subscriptions, messageTemplate, cancellationToken);
+            if(subscriptions != null && subscriptions.Any())
+                await SendMessagesToSubscriptions(subscriptions, messageTemplate, cancellationToken);
         }
 
         protected async Task SendMessagesFor(EventEntity eventEntity, MessageEvent messageEvent, CancellationToken cancellationToken)
