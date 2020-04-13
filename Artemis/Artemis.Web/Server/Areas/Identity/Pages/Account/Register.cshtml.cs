@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Artemis.Web.Server.Config;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Artemis.Web.Server.Users.Models;
@@ -14,27 +17,33 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Artemis.Web.Server.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ILogger<RegisterModel> _logger;
+        private readonly Captcha _captchaConfig;
         private readonly IEmailSender _emailSender;
+        private readonly ILogger<RegisterModel> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IOptions<Captcha> captchaConfig)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _captchaConfig = captchaConfig.Value;
         }
 
         [BindProperty]
@@ -65,6 +74,8 @@ namespace Artemis.Web.Server.Areas.Identity.Pages.Account
             [DataType(DataType.PhoneNumber)]
             [Display(Name = "Phone Number")]
             public string PhoneNumber { get; set; }
+
+            public string Token { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -77,7 +88,10 @@ namespace Artemis.Web.Server.Areas.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
+            
+            var reCaptchaPassed = await ReCaptchaPassed(Input.Token);
+
+            if (ModelState.IsValid && reCaptchaPassed)
             {
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, PhoneNumber = Input.PhoneNumber};
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -114,6 +128,24 @@ namespace Artemis.Web.Server.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        private async Task<bool> ReCaptchaPassed(string captchaResponse)
+        {
+            var httpClient = new HttpClient();
+            var res = await httpClient.GetAsync($"https://www.google.com/recaptcha/api/siteverify?secret={_captchaConfig.SecretKey}&response={captchaResponse}");
+            if (res.StatusCode != HttpStatusCode.OK)
+                return false;
+
+            var stringResult = await res.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<CaptchaResponse>(stringResult);
+            return result.Success;
+        }
+
+        public class CaptchaResponse
+        {
+            [JsonProperty("success")]
+            public bool Success { get; set; }
         }
     }
 }
