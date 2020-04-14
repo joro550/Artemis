@@ -42,7 +42,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _canUserSubscribe = await HttpClientAdapter.GetJsonAsync<bool>("/api/user/permission/subscription");
+        _canUserSubscribe = await HttpClientAdapter.GetJsonAsync<bool>("/api/user/permission/subscribe");
     }
 
     private async Task CreateEventBasedSubscription()
