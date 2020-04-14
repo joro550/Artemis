@@ -18,8 +18,8 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: Install dependencies
-      run: dotnet restore .\Artemis\Artemis.sln
+      run: dotnet restore ./Artemis/Artemis.sln
     - name: Build
-      run: dotnet build .\Artemis\Artemis.sln --configuration Release --no-restore
+      run: dotnet build ./Artemis/Artemis.sln --configuration Release --no-restore
     - name: Test
-      run: dotnet test .\Artemis\Artemis.sln --no-restore --verbosity normal
+      run: dotnet test ./Artemis/Artemis.sln --no-restore --verbosity normal
