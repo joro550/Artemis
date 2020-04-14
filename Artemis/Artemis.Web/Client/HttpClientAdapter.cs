@@ -24,16 +24,10 @@ namespace Artemis.Web.Client
             _authenticationService = authenticationService;
         }
 
-        public async Task<bool> CanGetToken()
+        public async Task<TokenResponse> CanGetToken()
         {
             var tokenResult = await _authenticationService.RequestAccessToken();
-            return tokenResult.TryGetToken(out _);
-        }
-
-        public async Task<TokenResponse> CanGetToken2()
-        {
-            var tokenResult = await _authenticationService.RequestAccessToken();
-            var tokenAcquired = tokenResult.TryGetToken(out var token);
+            var tokenAcquired = tokenResult.TryGetToken(out _);
             return new TokenResponse(tokenAcquired, tokenResult);
         }
 

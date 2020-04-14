@@ -42,15 +42,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _canUserSubscribe = await HttpClientAdapter.GetJsonAsync<bool>("/api/user/permission/subscribe");
+        var tokenResult = await HttpClientAdapter.CanGetToken();
+        if (tokenResult.Success)
+            _canUserSubscribe = await HttpClientAdapter.GetJsonAsync<bool>("/api/user/permission/subscribe");
     }
 
     private async Task CreateEventBasedSubscription()
     {
-        var tokenResult = await HttpClientAdapter.CanGetToken2();
+        var tokenResult = await HttpClientAdapter.CanGetToken();
         if (tokenResult.Success)
         {
-            await HttpClientAdapter.PostJsonAsync<EventSubscriptionResult>("/api/subscription/location", 
+            await HttpClientAdapter.PostJsonAsync<EventSubscriptionResult>("/api/subscription/location",
                 new EventSubscriptionRequest { EventId = Event.Id });
         }
         else

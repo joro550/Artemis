@@ -10,6 +10,8 @@
 @using Artemis.Web.Shared.Organizations
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
+<BreadcrumbView />
+
 <h1>Organizations</h1>
 
 @if (_orgs == null)
@@ -58,7 +60,7 @@ else
         _orgs = await Http.GetJsonAsync<Organization[]>("api/Organization");
 
         var canGetToken = await Http.CanGetToken();
-        if (_orgs.Any() && canGetToken)
+        if (_orgs.Any() && canGetToken.Success)
         {
             _employeeStatuses = await Http.GetJsonAsync<EmployeeStatusResponse[]>("api/employee/status");
         }

@@ -7,6 +7,9 @@
 @inject HttpClient Client
 @inject UserUtilities UserUtilities
 
+
+<BreadcrumbView OrganizationId="OrganizationId" EventId="EventId" />
+
 <EventJumbotron Event="_event" DisplayCallToAction="true" />
 
 @if (_eventUpdates == null)
@@ -47,7 +50,7 @@ else
     {
         _event = await Client.GetJsonAsync<Event>($"/api/organization/{OrganizationId}/event/{EventId}");
         _eventUpdates = await Client.GetJsonAsync<EventUpdate[]>($"/api/organization/{OrganizationId}/event/{EventId}/update");
-        
+
         _isEmployee = await UserUtilities.IsEmployeeOfOrganization(OrganizationId);
     }
 }
