@@ -1,8 +1,11 @@
 Artemis
 > Artemis, in Greek religion, the goddess of wild animals, the hunt, and vegetation, and of chastity and childbirth;
 
-![.NET Core](https://github.com/joro550/Artemis/workflows/.NET%20Core/badge.svg)
-![License](https://img.shields.io/github/license/joro550/Artemis)
+Master branch: ![.NET Core](https://github.com/joro550/Artemis/workflows/.NET%20Core/badge.svg)
+
+Develop branch: ![.NET Core](https://github.com/joro550/Artemis/workflows/.NET%20Core/badge.svg?branch=develop)
+
+License: ![License](https://img.shields.io/github/license/joro550/Artemis)
 
 
 # What is this?

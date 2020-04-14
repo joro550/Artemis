@@ -3,8 +3,8 @@
 @using Artemis.Web.Shared.Subscriptions
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
+@inject HttpClientAdapter HttpClientAdapter
 @inject NavigationManager Navigation
-@inject IAccessTokenProvider AuthenticationService
 
 @if (Organization != null)
 {
@@ -31,7 +31,7 @@
         <div class="container">
             <h1>@Organization.Name</h1>
             <p class="lead text-muted">@Organization.Description</p>
-            @if (DisplayCallToAction)
+            @if (DisplayCallToAction && _canUserSubscribe)
             {
                 <AuthorizeView>
                     <p>
@@ -61,19 +61,22 @@ else
     public bool DisplayCallToAction { get; set; }
 
     private Timer _timer;
-
     private bool _displayToast;
+    private bool _canUserSubscribe;
 
-    public async Task CreateLocationBasedSubscription()
+    protected override async Task OnInitializedAsync()
     {
-        var httpClient = new HttpClient { BaseAddress = new Uri(Navigation.BaseUri) };
-        var tokenResult = await AuthenticationService.RequestAccessToken();
+        _canUserSubscribe = await HttpClientAdapter.GetJsonAsync<bool>("/api/user/permission/subscription");
+    }
 
-        if (tokenResult.TryGetToken(out var token))
+    private async Task CreateLocationBasedSubscription()
+    {
+        var tokenResult = await HttpClientAdapter.CanGetToken2();
+
+        if (tokenResult.Success)
         {
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
-            var result = await httpClient.PostJsonAsync<LocationSubscriptionResult>("/api/subscription/location",
-                new LocationSubscriptionRequest {OrganizationId = Organization.Id});
+            var result = await HttpClientAdapter.PostJsonAsync<LocationSubscriptionResult>("/api/subscription/location",
+                    new LocationSubscriptionRequest {OrganizationId = Organization.Id});
 
             if (result.Success)
             {
@@ -83,19 +86,17 @@ else
         }
         else
         {
-            Navigation.NavigateTo(tokenResult.RedirectUrl);
+            Navigation.NavigateTo(tokenResult.Token.RedirectUrl);
         }
     }
 
-    public async Task CreateOrganizationBasedSubscription()
+    private async Task CreateOrganizationBasedSubscription()
     {
-        var httpClient = new HttpClient { BaseAddress = new Uri(Navigation.BaseUri) };
-        var tokenResult = await AuthenticationService.RequestAccessToken();
 
-        if (tokenResult.TryGetToken(out var token))
+        var tokenResult = await HttpClientAdapter.CanGetToken2();
+        if (tokenResult.Success)
         {
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
-            var result = await httpClient.PostJsonAsync<OrganizationSubscriptionResult>("/api/subscription/organization",
+            var result = await HttpClientAdapter.PostJsonAsync<OrganizationSubscriptionResult>("/api/subscription/organization",
                 new OrganizationSubscriptionRequest { OrganizationId = Organization.Id });
 
             if (result.Success)
@@ -106,7 +107,7 @@ else
         }
         else
         {
-            Navigation.NavigateTo(tokenResult.RedirectUrl);
+            Navigation.NavigateTo(tokenResult.Token.RedirectUrl);
         }
     }
 

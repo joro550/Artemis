@@ -1,8 +1,8 @@
 ﻿@using Artemis.Web.Shared.Events
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Artemis.Web.Shared.Subscriptions
 
 @inject NavigationManager Navigation
-@inject IAccessTokenProvider AuthenticationService
+@inject HttpClientAdapter HttpClientAdapter
 
 @if (Event != null)
 {
@@ -10,7 +10,7 @@
         <div class="container">
             <h1>@Event.Name</h1>
             <p class="lead text-muted">@Event.Description</p>
-            @if (DisplayCallToAction)
+            @if (DisplayCallToAction && _canUserSubscribe)
             {
                 <AuthorizeView>
                     <p>
@@ -38,19 +38,24 @@ else
     [Parameter]
     public bool DisplayCallToAction { get; set; }
 
-    public async Task CreateEventBasedSubscription()
-    {
-        var httpClient = new HttpClient { BaseAddress = new Uri(Navigation.BaseUri) };
-        var tokenResult = await AuthenticationService.RequestAccessToken();
+    private bool _canUserSubscribe;
 
-        if (tokenResult.TryGetToken(out var token))
+    protected override async Task OnInitializedAsync()
+    {
+        _canUserSubscribe = await HttpClientAdapter.GetJsonAsync<bool>("/api/user/permission/subscription");
+    }
+
+    private async Task CreateEventBasedSubscription()
+    {
+        var tokenResult = await HttpClientAdapter.CanGetToken2();
+        if (tokenResult.Success)
         {
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
-            await httpClient.PostAsync("/api/subscription/location", new MultipartContent());
+            await HttpClientAdapter.PostJsonAsync<EventSubscriptionResult>("/api/subscription/location", 
+                new EventSubscriptionRequest { EventId = Event.Id });
         }
         else
         {
-            Navigation.NavigateTo(tokenResult.RedirectUrl);
+            Navigation.NavigateTo(tokenResult.Token.RedirectUrl);
         }
     }
 }
