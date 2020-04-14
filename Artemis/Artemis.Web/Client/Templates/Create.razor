@@ -68,6 +68,6 @@
             await httpClient.PostJsonAsync($"api/organization/{OrganizationId}/template", model);
         }
 
-        Navigation.NavigateTo($"/organization/{OrganizationId}/templates");
+        Navigation.NavigateTo($"/organizations/{OrganizationId}/templates");
     }
 }

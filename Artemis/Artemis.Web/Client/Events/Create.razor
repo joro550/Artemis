@@ -8,7 +8,6 @@
 
 <BreadcrumbView OrganizationId="OrganizationId" />
 
-
 <EditForm Model="@_model" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -65,8 +64,7 @@
 
     private async Task HandleValidSubmit()
     {
-        var httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri(Navigation.BaseUri);
+        var httpClient = new HttpClient {BaseAddress = new Uri(Navigation.BaseUri)};
 
         var tokenResult = await AuthenticationService.RequestAccessToken();
         if (tokenResult.TryGetToken(out var token))

@@ -1,5 +1,4 @@
-﻿using Artemis.Web.Server.Data.Models;
-using MediatR;
+﻿using MediatR;
 
 namespace Artemis.Web.Server.Events
 {
