@@ -23,8 +23,11 @@ namespace Artemis.Web.Server.Organizations.Controllers
         }
 
         [HttpGet("")]
-        public async Task<List<Organization>> GetAllOrganizations() 
-            => await _mediator.Send(new GetOrganizations { Count = 50, Offset = 0 });
+        public async Task<List<Organization>> GetAllOrganizations()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return await _mediator.Send(new GetOrganizations {Count = 50, Offset = 0, UserId = user?.Id});
+        }
 
         [HttpGet("{id}")]
         public async Task<Organization> GetOrganization(int id)

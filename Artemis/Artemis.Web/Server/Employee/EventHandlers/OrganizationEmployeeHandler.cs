@@ -28,7 +28,7 @@ namespace Artemis.Web.Server.Employee.EventHandlers
 
         public async Task Handle(OrganizationCreated notification, CancellationToken cancellationToken)
         {
-            await _context.Employees.AddAsync(cancellationToken: cancellationToken,
+            await _context.Set<EmployeeEntity>().AddAsync(cancellationToken: cancellationToken,
                 entity: new EmployeeEntity {UserId = notification.UserId, OrganizationId = notification.Id});
             await _context.SaveChangesAsync(cancellationToken);
         }

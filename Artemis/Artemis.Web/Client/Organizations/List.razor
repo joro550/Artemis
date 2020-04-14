@@ -2,7 +2,7 @@
 @page "/organizations"
 @page "/organizations/list"
 
-@inject HttpClient Http
+@inject HttpClientAdapter Http
 @inject NavigationManager Navigation
 @inject IAccessTokenProvider AuthenticationService
 
@@ -26,28 +26,25 @@ else
         @foreach (var org in _orgs)
         {
             var isEmployee = _employeeStatuses.Any(response => response.OrganizationId == org.Id);
-            if (org.IsPublished || isEmployee)
-            {
-                <div class="col-md-4">
-                    <div class="card mb-4 shadow-sm">
-                        <div class="card-header">@org.Name</div>
-                        <div class="card-body">
-                            <p class="card-text">@org.Description</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <a href="/organization/@org.Id/events/" class="btn btn-sm btn-outline-secondary">View</a>
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header">@org.Name</div>
+                    <div class="card-body">
+                        <p class="card-text">@org.Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a href="/organization/@org.Id/events/" class="btn btn-sm btn-outline-secondary">View</a>
 
-                                    @if (isEmployee)
-                                    {
-                                        <a href="/organizations/@org.Id/templates" class="btn btn-sm btn-outline-secondary">Message templates</a>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                    }
-                                </div>
+                                @if (isEmployee)
+                                {
+                                    <a href="/organizations/@org.Id/templates" class="btn btn-sm btn-outline-secondary">Message templates</a>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
-            }
+            </div>
         }
     </div>
 }
@@ -60,14 +57,10 @@ else
     {
         _orgs = await Http.GetJsonAsync<Organization[]>("api/Organization");
 
-        var tokenResult = await AuthenticationService.RequestAccessToken();
-
-        if (_orgs.Any() && tokenResult.TryGetToken(out var token))
+        var canGetToken = await Http.CanGetToken();
+        if (_orgs.Any() && canGetToken)
         {
-            var httpClient = new HttpClient { BaseAddress = new Uri(Navigation.BaseUri) };
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
-
-            _employeeStatuses = await httpClient.GetJsonAsync<EmployeeStatusResponse[]>("api/employee/status");
+            _employeeStatuses = await Http.GetJsonAsync<EmployeeStatusResponse[]>("api/employee/status");
         }
         else
         {

@@ -26,5 +26,7 @@ namespace Artemis.Web.Server.Data.Models
 
         [Required]
         public AddressType AddressType { get; set; }
+
+        public EventEntity Event { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Artemis.Web.Shared.Events;
+using Artemis.Web.Shared.Organizations;
 
 namespace Artemis.Web.Server.Data.Models
 {
@@ -28,5 +29,6 @@ namespace Artemis.Web.Server.Data.Models
         public virtual EventType EventType { get; set; } = EventType.Persistent;
 
         public EventAddressEntity Address { get; set; }
+        public OrganizationEntity Organization { get; set; }
     }
 }

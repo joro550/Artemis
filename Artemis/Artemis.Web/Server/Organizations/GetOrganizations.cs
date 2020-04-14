@@ -8,5 +8,6 @@ namespace Artemis.Web.Server.Organizations
     {
         public int Count { get; set; }
         public int Offset { get; set; }
+        public string UserId { get; set; }
     }
 }

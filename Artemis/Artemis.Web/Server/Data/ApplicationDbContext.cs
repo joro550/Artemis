@@ -32,6 +32,8 @@ namespace Artemis.Web.Server.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Discrimination
+
             modelBuilder.Entity<EventEntity>()
                 .HasDiscriminator(b => b.EventType)
                 .HasValue<EventEntity>(EventType.Persistent)
@@ -48,20 +50,19 @@ namespace Artemis.Web.Server.Data
                 .HasValue<LocationSubscriptionEntity>(SubscriptionType.Location)
                 .HasValue<OrganizationSubscriptionEntity>(SubscriptionType.Organization);
 
-            modelBuilder.Entity<OrganizationEntity>()
-                .HasMany<EmployeeEntity>()
-                .WithOne(entity => entity.Organization)
-                .HasForeignKey(entity => entity.OrganizationId);
+            // Relationships
+
+            modelBuilder.Entity<EmployeeEntity>()
+                .HasOne(entity => entity.Organization)
+                .WithMany(entity => entity.Employees);
 
             modelBuilder.Entity<EventAddressEntity>()
-                .HasOne<EventEntity>()
-                .WithOne(entity => entity.Address)
-                .HasForeignKey<EventAddressEntity>(entity => entity.EventId);
+                .HasOne(entity => entity.Event)
+                .WithOne(entity => entity.Address);
 
             modelBuilder.Entity<EventEntity>()
-                .HasOne<OrganizationEntity>()
-                .WithMany(organization => organization.Events)
-                .HasForeignKey(entity => entity.OrganizationId);
+                .HasOne(entity => entity.Organization)
+                .WithMany(entity => entity.Events);
         }
     }
 }

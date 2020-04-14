@@ -16,6 +16,7 @@ namespace Artemis.Web.Client
             builder.Services.AddApiAuthorization();
 
             builder.Services.AddTransient<UserUtilities>();
+            builder.Services.AddTransient<HttpClientAdapter>();
 
             await builder.Build().RunAsync();
         }

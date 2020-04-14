@@ -37,8 +37,14 @@ namespace Artemis.Web.Server.Organizations.EventHandlers
 
         public async Task<List<Organization>> Handle(GetOrganizations request, CancellationToken cancellationToken)
         {
-            var organization = await _context.Set<OrganizationEntity>()
-                .Skip(request.Offset)
+            var dbSet = _context.Set<OrganizationEntity>();
+
+            var query = string.IsNullOrWhiteSpace(request.UserId) 
+                ? dbSet.Where(entity => entity.IsPublished) 
+                : dbSet.Include(entity => entity.Employees)
+                    .Where(entity => entity.IsPublished || entity.Employees.Any(employee => employee.UserId == request.UserId));
+
+             var organization = await query.Skip(request.Offset)
                 .Take(request.Count)
                 .ToListAsync(cancellationToken);
             return _mapper.Map<List<Organization>>(organization);
