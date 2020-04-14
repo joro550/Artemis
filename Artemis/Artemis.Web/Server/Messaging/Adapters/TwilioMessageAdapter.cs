@@ -1,4 +1,5 @@
-﻿using Twilio;
+﻿using System;
+using Twilio;
 using System.Threading.Tasks;
 using Artemis.Web.Server.Config;
 using Microsoft.Extensions.Options;
@@ -16,7 +17,18 @@ namespace Artemis.Web.Server.Messaging.Adapters
             TwilioClient.Init(config.Value.AccountSid, config.Value.Token);
         }
 
-        public override async Task<string> SendMessage(string to, string message) 
-            => (await MessageResource.CreateAsync(to: to, body: message, @from: _config.FromNumber)).Sid;
+        public override async Task<string> SendMessage(string to, string message)
+        {
+            try
+            {
+                var messageResource =
+                    await MessageResource.CreateAsync(to: to, body: message, from: _config.FromNumber);
+                return messageResource.Sid;
+            }
+            catch(Exception)
+            {
+                return string.Empty;
+            }
+        }
     }
 }
