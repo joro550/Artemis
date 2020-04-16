@@ -66,4 +66,8 @@ Twilio:FromNumber | The number with which twilio will use to send the message | 
 Twilio:Token | Twilio auth token  | The auth token in which to use to authenticate with twilio messaging
 UserConfig:PhoneNumber | A phone number you own | Whilst in developer mode the data seeder will add a user with this phone number 
 Captcha:SecretKey | Secret key handed out when setting up a reCaptcha | The secret key to send to the reCaptcha api when user registers
+SendGrid:User | The user in which to send to email from on the send grid system | To auth with send grid
+SendGrid:Key | The key in which send grid gives you to send emails | To authe with send grid
+SendGrid:FromAddress | A valid email address | The email address that will apear in the from address when sending emails from the website
+
 

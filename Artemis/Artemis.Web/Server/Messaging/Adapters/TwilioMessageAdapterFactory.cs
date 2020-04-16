@@ -5,16 +5,15 @@ namespace Artemis.Web.Server.Messaging.Adapters
 {
     public class TwilioMessageAdapterFactory
     {
-        private readonly IOptions<TwilioConfig> _config;
+        private readonly TwilioConfig _config;
 
-        public TwilioMessageAdapterFactory(IOptions<TwilioConfig> config) 
+        public TwilioMessageAdapterFactory(TwilioConfig config)
             => _config = config;
 
         public MessagingClientAdapter GetMessagingClient()
         {
-            var twilioConfig = _config.Value;
-            return string.IsNullOrWhiteSpace(twilioConfig.AccountSid) || string.IsNullOrWhiteSpace(twilioConfig.Token)
-                ? (MessagingClientAdapter) new NoMessageAdapter()
+            return string.IsNullOrWhiteSpace(_config.AccountSid) || string.IsNullOrWhiteSpace(_config.Token)
+                ? (MessagingClientAdapter)new NoMessageAdapter()
                 : new TwilioMessageAdapter(_config);
         }
     }
