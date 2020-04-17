@@ -8,7 +8,7 @@
         <li class="breadcrumb-item"><a href="/">Home</a></li>
         @if (OrganizationId != null)
         {
-            <li class="breadcrumb-item"><a href="/organization/@OrganizationId.Value">@_organization?.Name</a></li>
+            <li class="breadcrumb-item"><a href="/organization/@OrganizationId.Value/events">@_organization?.Name</a></li>
             @if (EventId != null)
             {
                 <li class="breadcrumb-item active" aria-current="page">@_event?.Name</li>

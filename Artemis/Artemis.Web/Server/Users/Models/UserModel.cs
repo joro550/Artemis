@@ -21,6 +21,8 @@ namespace Artemis.Web.Server.Users.Models
 
         public async Task<bool> CanCreateEventFor(Organization organization) 
             => await IsEmployee(organization.Id);
+        public async Task<bool> CanUpdateEventFor(Organization organization)
+            => await IsEmployee(organization.Id);
 
         public async Task<bool> CanCreateUpdateFor(Event eventId) 
             => await IsEmployee(eventId.OrganizationId);

@@ -14,7 +14,8 @@ namespace Artemis.Web.Server.Events.EventHandlers
     public class EventsHandler
         : IRequestHandler<GetEvent, Event>, 
           IRequestHandler<GetEvents, List<Event>>,
-          INotificationHandler<CreateEventNotification>
+          INotificationHandler<CreateEventNotification>,
+          INotificationHandler<UpdateEventNotification>
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
@@ -59,6 +60,21 @@ namespace Artemis.Web.Server.Events.EventHandlers
             await _context.AddAsync(eventEntity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             await _mediator.Publish(new EventCreatedNotification {Id = eventEntity.Id}, cancellationToken);
+        }
+
+        public async Task Handle(UpdateEventNotification notification, CancellationToken cancellationToken)
+        {
+            var eventEntity = notification.Event.IsTimedEvent
+                ? _mapper.Map<TimedEventEntity>(notification.Event)
+                : _mapper.Map<EventEntity>(notification.Event);
+
+            var dbEvent = await _context.Set<EventEntity>()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(entity => eventEntity.Id == notification.Event.Id, cancellationToken);
+
+            eventEntity.IsPublished = dbEvent.IsPublished;
+            _context.Set<EventEntity>().Update(eventEntity);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

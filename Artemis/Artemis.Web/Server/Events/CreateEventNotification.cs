@@ -5,6 +5,6 @@ namespace Artemis.Web.Server.Events
 {
     public class CreateEventNotification : INotification
     {
-        public CreateEvent Event { get; set; } 
+        public CreateEvent Event { get; set; }
     }
 }

@@ -39,7 +39,7 @@ else
                                     <AuthorizeView>
                                         @if (_isEmployee)
                                         {
-                                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                            <a href="/organization/@OrganizationId/events/edit/@evt.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
                                         }
                                     </AuthorizeView>
                                 </div>
