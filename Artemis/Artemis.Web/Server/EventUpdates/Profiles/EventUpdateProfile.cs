@@ -10,6 +10,7 @@ namespace Artemis.Web.Server.EventUpdates.Profiles
         {
             CreateMap<EventUpdateEntity, EventUpdate>();
             CreateMap<CreateEventUpdate, EventUpdateEntity>();
+            CreateMap<EditEventUpdate, EventUpdateEntity>();
         }
     }
 }

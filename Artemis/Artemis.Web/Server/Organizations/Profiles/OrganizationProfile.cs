@@ -10,6 +10,7 @@ namespace Artemis.Web.Server.Organizations.Profiles
         {
             CreateMap<OrganizationEntity, Organization>();
             CreateMap<CreateOrganization, OrganizationEntity>();
+            CreateMap<EditOrganization, OrganizationEntity>();
         }
     }
 }

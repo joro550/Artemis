@@ -10,6 +10,7 @@ namespace Artemis.Web.Server.MessageTemplates.Profiles
         {
             CreateMap<MessageTemplateEntity, MessageTemplate>();
             CreateMap<CreateMessageTemplate, MessageTemplateEntity>();
+            CreateMap<EditMessageTemplate, MessageTemplateEntity>();
         }
     }
 }
