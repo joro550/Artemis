@@ -46,5 +46,22 @@ namespace Artemis.Web.Server.EventUpdates.Controllers
             await _mediator.Publish(new CreateEventUpdateNotification {Model = model});
             return Ok();
         }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> UpdateEventUpdate(EditEventUpdate model)
+        {
+            var @event = await _mediator.Send(new GetEvent { OrganizationId = model.OrganizationId, Id = model.EventId });
+            if (@event == null)
+                return BadRequest();
+
+            var user = await _userManager.GetUserAsync(User);
+            var canCreateEvent = await user.CanCreateUpdateFor(@event);
+            if (!canCreateEvent)
+                return Unauthorized();
+
+            await _mediator.Publish(new EditEventUpdateNotification { Model = model });
+            return Ok();
+        }
     }
 }

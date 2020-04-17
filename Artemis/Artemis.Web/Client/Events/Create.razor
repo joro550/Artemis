@@ -4,7 +4,10 @@
 @inject IAccessTokenProvider AuthenticationService
 
 @using Artemis.Web.Shared.Events
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@attribute [Authorize]
 
 <BreadcrumbView OrganizationId="OrganizationId" />
 

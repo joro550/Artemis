@@ -15,7 +15,8 @@ namespace Artemis.Web.Server.Organizations.EventHandlers
     public class OrganizationHandler
         : IRequestHandler<GetOrganizationById, Organization>,
           IRequestHandler<GetOrganizations, List<Organization>>,
-          INotificationHandler<CreateOrganizationNotification>
+          INotificationHandler<CreateOrganizationNotification>,
+          INotificationHandler<EditOrganizationNotification>
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
@@ -60,6 +61,11 @@ namespace Artemis.Web.Server.Organizations.EventHandlers
 
             await _mediator.Publish(new OrganizationCreated {Id = result.Entity.Id, UserId = notification.UserId},
                 cancellationToken);
+        }
+
+        public Task Handle(EditOrganizationNotification notification, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
         }
     }
 }

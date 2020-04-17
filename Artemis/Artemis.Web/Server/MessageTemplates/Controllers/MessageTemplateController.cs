@@ -32,7 +32,7 @@ namespace Artemis.Web.Server.MessageTemplates.Controllers
             => await _mediator.Send(new GetMessageTemplate {Id = templateId, OrganizationId = organizationId});
 
         [HttpPost]
-        // [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> CreateTemplate(CreateMessageTemplate model)
         {
             var organization = await _mediator.Send(new GetOrganizationById { Id = model.OrganizationId });
@@ -46,6 +46,24 @@ namespace Artemis.Web.Server.MessageTemplates.Controllers
                 return Unauthorized();
 
             await _mediator.Publish(new CreateMessageTemplateNotification {Model = model});
+            return Ok();
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> UpdateTemplate(EditMessageTemplate model)
+        {
+            var organization = await _mediator.Send(new GetOrganizationById { Id = model.OrganizationId });
+            if (organization == null)
+                return BadRequest();
+
+            var user = await _userManager.GetUserAsync(User);
+            var canCreateTemplate = await user.CanCreateTemplatesFor(organization);
+
+            if (!canCreateTemplate)
+                return Unauthorized();
+
+            await _mediator.Publish(new EditMessageTemplateNotification { Model = model });
             return Ok();
         }
     }

@@ -15,7 +15,8 @@ namespace Artemis.Web.Server.MessageTemplates.EventHandlers
     public class MessageTemplateHandler
         :   IRequestHandler<GetMessageTemplates, List<MessageTemplate>>,    
             IRequestHandler<GetMessageTemplate, MessageTemplate>,
-            INotificationHandler<CreateMessageTemplateNotification>
+            INotificationHandler<CreateMessageTemplateNotification>,
+            INotificationHandler<EditMessageTemplateNotification>
     {
         private readonly IMapper _mapper;
         private readonly ApplicationDbContext _context;
@@ -52,6 +53,11 @@ namespace Artemis.Web.Server.MessageTemplates.EventHandlers
                 .AddAsync(request, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
+        }
+
+        public Task Handle(EditMessageTemplateNotification notification, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
         }
     }
 }

@@ -14,7 +14,8 @@ namespace Artemis.Web.Server.EventUpdates.EventHandlers
 {
     public class EventUpdateHandler
         :   IRequestHandler<GetEventUpdates, List<EventUpdate>>,
-            INotificationHandler<CreateEventUpdateNotification>
+            INotificationHandler<CreateEventUpdateNotification>,
+            INotificationHandler<EditEventUpdateNotification>
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
@@ -45,6 +46,11 @@ namespace Artemis.Web.Server.EventUpdates.EventHandlers
             await _context.SaveChangesAsync(cancellationToken);
 
             await _mediator.Publish(new EventUpdateCreated {Id = result.Entity.Id}, cancellationToken);
+        }
+
+        public Task Handle(EditEventUpdateNotification notification, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
         }
     }
 }
