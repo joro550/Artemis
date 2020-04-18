@@ -72,7 +72,7 @@ namespace Artemis.Web.Server.Organizations.EventHandlers
                 .FirstOrDefaultAsync(entity => entity.Id == notification.Organization.Id, cancellationToken);
 
             organizationEntity.IsPublished = orgFromDb.IsPublished;
-            _context.Update(organizationEntity);
+            _context.Set<OrganizationEntity>().Update(organizationEntity);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

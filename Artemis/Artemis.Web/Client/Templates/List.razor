@@ -1,5 +1,5 @@
-﻿@page "/organizations/{OrganizationId:int}/templates/list"
-@page "/organizations/{OrganizationId:int}/templates"
+﻿@page "/organization/{OrganizationId:int}/templates/list"
+@page "/organization/{OrganizationId:int}/templates"
 
 @using Artemis.Web.Shared.Organizations
 @using Microsoft.AspNetCore.Authorization
@@ -35,7 +35,7 @@ else
                         <p class="card-text">@template.Text</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                <a href="/organizations/@OrganizationId/template/edit/@template.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
                             </div>
                         </div>
                         <small class="text-muted">@template.MessageEvent</small>

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Artemis.Web.Server.EventUpdates.Controllers
 {
     [ApiController]
-    [Route("api/organization/{organizationId:int}/event/{eventId:int}/update")]
+    [Route("/api/organization/{organizationId}/event/{eventId}/update")]
     public class EventUpdateController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -22,12 +22,13 @@ namespace Artemis.Web.Server.EventUpdates.Controllers
             _userManager = userManager;
         }
 
+        [HttpGet("{id}")]
+        public async Task<EventUpdate> GetEventUpdate(int id) 
+            => await _mediator.Send(new GetEventUpdate {UpdateId = id, Count = 100, Offset = 0});
+
         [HttpGet]
-        public async Task<List<EventUpdate>> GetEventUpdates(int organizationId, int eventId)
-        {
-            return await _mediator.Send(new GetEventUpdates
-                {OrganizationId = organizationId, EventId = eventId, Count = 100, Offset = 0});
-        }
+        public async Task<List<EventUpdate>> GetEventUpdates(int organizationId, int eventId) =>
+            await _mediator.Send(new GetEventUpdates {OrganizationId = organizationId, EventId = eventId, Count = 100, Offset = 0});
 
         [HttpPost]
         [Authorize]

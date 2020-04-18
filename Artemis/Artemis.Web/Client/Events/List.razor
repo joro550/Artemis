@@ -10,7 +10,6 @@
 
 
 <BreadcrumbView OrganizationId="OrganizationId" />
-
 <OrgJumbotron Organization="@_organization" DisplayCallToAction="true" />
 
 @if (_events == null)
@@ -26,41 +25,38 @@ else
     <div class="row">
         @foreach (var evt in _events)
         {
-            if (evt.IsPublished || _isEmployee)
-            {
-                <div class="col-md-4">
-                    <div class="card mb-4 shadow-sm">
-                        <div class="card-header">@evt.Name</div>
-                        <div class="card-body">
-                            <p class="card-text">@evt.Description</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <a href="/organization/@OrganizationId/events/@evt.Id" class="btn btn-sm btn-outline-secondary">View</a>
-                                    <AuthorizeView>
-                                        @if (_isEmployee)
-                                        {
-                                            <a href="/organization/@OrganizationId/events/edit/@evt.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
-                                        }
-                                    </AuthorizeView>
-                                </div>
-                                @if (evt is TimedEvent timedEvent)
-                                {
-
-                                    var timeLeft = DateTime.Now.Subtract(timedEvent.EndDate);
-                                    if (timeLeft.Days < 1)
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header">@evt.Name</div>
+                    <div class="card-body">
+                        <p class="card-text">@evt.Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a href="/organization/@OrganizationId/events/@evt.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                                <AuthorizeView>
+                                    @if (_isEmployee)
                                     {
-                                        <small class="text-muted">@timeLeft.ToString("g") left</small>
+                                        <a href="/organization/@OrganizationId/events/edit/@evt.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
                                     }
-                                    else
-                                    {
-                                        <small class="text-muted">@timeLeft.Days days left</small>
-                                    }
-                                }
+                                </AuthorizeView>
                             </div>
+                            @if (evt is TimedEvent timedEvent)
+                            {
+
+                                var timeLeft = DateTime.Now.Subtract(timedEvent.EndDate);
+                                if (timeLeft.Days < 1)
+                                {
+                                    <small class="text-muted">@timeLeft.ToString("g") left</small>
+                                }
+                                else
+                                {
+                                    <small class="text-muted">@timeLeft.Days days left</small>
+                                }
+                            }
                         </div>
                     </div>
                 </div>
-            }
+            </div>
         }
     </div>
 }

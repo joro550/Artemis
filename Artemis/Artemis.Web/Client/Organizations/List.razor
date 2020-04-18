@@ -4,11 +4,9 @@
 
 @inject HttpClientAdapter Http
 @inject NavigationManager Navigation
-@inject IAccessTokenProvider AuthenticationService
 
 @using Artemis.Web.Shared.Employee
 @using Artemis.Web.Shared.Organizations
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 <BreadcrumbView />
 
@@ -39,8 +37,8 @@ else
 
                                 @if (isEmployee)
                                 {
-                                    <a href="/organizations/@org.Id/templates" class="btn btn-sm btn-outline-secondary">Message templates</a>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                    <a href="/organization/@org.Id/templates" class="btn btn-sm btn-outline-secondary">Message templates</a>
+                                    <a href="/organization/edit/@org.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
                                 }
                             </div>
                         </div>

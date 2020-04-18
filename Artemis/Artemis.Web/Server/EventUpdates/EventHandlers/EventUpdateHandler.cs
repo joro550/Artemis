@@ -13,9 +13,10 @@ using Microsoft.EntityFrameworkCore;
 namespace Artemis.Web.Server.EventUpdates.EventHandlers
 {
     public class EventUpdateHandler
-        :   IRequestHandler<GetEventUpdates, List<EventUpdate>>,
-            INotificationHandler<CreateEventUpdateNotification>,
-            INotificationHandler<EditEventUpdateNotification>
+        :   IRequestHandler<GetEventUpdate, EventUpdate>,
+            INotificationHandler<EditEventUpdateNotification>,
+            IRequestHandler<GetEventUpdates, List<EventUpdate>>,
+            INotificationHandler<CreateEventUpdateNotification>
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
@@ -53,6 +54,13 @@ namespace Artemis.Web.Server.EventUpdates.EventHandlers
             var updateEntity = _mapper.Map<EventUpdateEntity>(notification.Model);
             _context.Update(updateEntity);
             await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<EventUpdate> Handle(GetEventUpdate request, CancellationToken cancellationToken)
+        {
+            var update = await _context.Set<EventUpdateEntity>()
+                .FirstOrDefaultAsync(entity => entity.Id == request.UpdateId, cancellationToken);
+            return _mapper.Map<EventUpdate>(update);
         }
     }
 }

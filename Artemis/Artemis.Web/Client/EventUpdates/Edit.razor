@@ -4,14 +4,13 @@
 @inject NavigationManager Navigation
 @inject IAccessTokenProvider AuthenticationService
 
-@using Artemis.Web.Shared.Events
 @using Artemis.Web.Shared.EventUpdates
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @attribute [Authorize]
 
-<BreadcrumbView OrganizationId="OrganizationId" EventId="EventId" />
+<BreadcrumbView OrganizationId="OrganizationId" EventId="EventId" UpdateId="UpdateId" />
 
 <EditForm Model="@_model" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />

@@ -1,8 +1,8 @@
-﻿using System.Security.Claims;
+﻿using MediatR;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Artemis.Web.Server.Users.Models;
-using MediatR;
 
 namespace Artemis.Web.Server.Users
 {

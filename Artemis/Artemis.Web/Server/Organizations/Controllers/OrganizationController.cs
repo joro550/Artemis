@@ -27,7 +27,7 @@ namespace Artemis.Web.Server.Organizations.Controllers
         public async Task<List<Organization>> GetAllOrganizations()
         {
             var user = await _userManager.GetUserAsync(User);
-            return await _mediator.Send(new GetOrganizations {Count = 50, Offset = 0, UserId = user.User.Id});
+            return await _mediator.Send(new GetOrganizations {Count = 50, Offset = 0, UserId = user.User?.Id});
         }
 
         [HttpGet("{id}")]
@@ -39,7 +39,7 @@ namespace Artemis.Web.Server.Organizations.Controllers
         public async Task<IActionResult> CreateOrganization(CreateOrganization org)
         {
             var user = await _userManager.GetUserAsync(User);
-            await _mediator.Publish(new CreateOrganizationNotification {Organization = org, UserId = user.User.Id});
+            await _mediator.Publish(new CreateOrganizationNotification {Organization = org, UserId = user.User?.Id});
             return Ok();
         }
 
@@ -53,7 +53,7 @@ namespace Artemis.Web.Server.Organizations.Controllers
                 return BadRequest();
 
             var user = await _userManager.GetUserAsync(User);
-            await _mediator.Publish(new EditOrganizationNotification { Organization = org, UserId = user.User.Id });
+            await _mediator.Publish(new EditOrganizationNotification { Organization = org, UserId = user.User?.Id });
             return Ok();
         }
     }

@@ -11,7 +11,16 @@
             <li class="breadcrumb-item"><a href="/organization/@OrganizationId.Value/events">@_organization?.Name</a></li>
             @if (EventId != null)
             {
-                <li class="breadcrumb-item active" aria-current="page">@_event?.Name</li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    @if (UpdateId != null)
+                    {
+                        <a href="/organization/@OrganizationId.Value/events/@EventId">@_event.Name</a>
+                    }
+                    else
+                    {
+                        @_event?.Name
+                    }
+                </li>
             }
         }
     </ol>
@@ -23,6 +32,9 @@
 
     [Parameter]
     public int? EventId { get; set; }
+
+    [Parameter]
+    public int? UpdateId { get; set; }
 
     private Event _event;
     private Organization _organization;
