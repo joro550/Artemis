@@ -32,6 +32,7 @@ namespace Artemis.Web.Server.Organizations.EventHandlers
         public async Task<Organization> Handle(GetOrganizationById request, CancellationToken cancellationToken)
         {
             var organization = await _context.Set<OrganizationEntity>()
+                .AsNoTracking()
                 .SingleOrDefaultAsync(org => org.Id == request.Id, cancellationToken);
             return _mapper.Map<Organization>(organization ?? new OrganizationEntity());
         }
