@@ -9,7 +9,7 @@
     </div>
     <div class="card-body">
         <p class="card-text">@Model.Message</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
+        <a href="@Model.CallToAction" class="btn btn-primary">Go somewhere</a>
 
         @if(_canEdit)
         {
@@ -20,7 +20,6 @@
         2 days ago
     </div>
 </div>
-
 
 @code {
     [Parameter]
