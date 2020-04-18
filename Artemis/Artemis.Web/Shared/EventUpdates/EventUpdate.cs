@@ -7,5 +7,6 @@ namespace Artemis.Web.Shared.EventUpdates
         public int EventId { get; set; }
         public string Title { get; set; }
         public string Message { get; set; }
+        public string CallToAction { get; set; }
     }
 }

@@ -16,5 +16,6 @@ namespace Artemis.Web.Shared.EventUpdates
         [Required]
         public string Message { get; set; }
 
+        public string CallToAction { get; set; }
     }
 }

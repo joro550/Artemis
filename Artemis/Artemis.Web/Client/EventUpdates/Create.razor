@@ -27,7 +27,13 @@
         <label>Message</label>
         <InputTextArea class="form-control" @bind-Value="_model.Message" />
     </div>
-    <button type="submit">Submit</button>
+
+    <div class="form-group">
+        <label>Call to action</label>
+        <InputText class="form-control" @bind-Value="_model.CallToAction" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
 </EditForm>
 
 
