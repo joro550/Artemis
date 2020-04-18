@@ -32,7 +32,6 @@
     <button type="submit">Submit</button>
 </EditForm>
 
-
 @code {
     [Parameter]
     public int OrganizationId { get; set; }
@@ -50,10 +49,9 @@
         var tokenResult = await Http.CanGetToken();
         if (!tokenResult.Success)
         {
-            Navigation.NavigateTo($"/organization/{OrganizationId}/events/");
+            Navigation.NavigateTo($"/organization/{OrganizationId}/events/{EventId}");
             return;
         }
-
 
         var update = await Http.GetJsonAsync<EventUpdate>($"/api/organization/{OrganizationId}/event/{EventId}/update/{UpdateId}");
         _model.Load(update);
@@ -63,6 +61,6 @@
     private async Task HandleValidSubmit()
     {
         await Http.PutJsonAsync($"/api/organization/{OrganizationId}/event/{EventId}/update", _model);
-        Navigation.NavigateTo($"/organization/{OrganizationId}/events/");
+        Navigation.NavigateTo($"/organization/{OrganizationId}/events/{EventId}");
     }
 }

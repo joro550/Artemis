@@ -1,4 +1,7 @@
-﻿@using Artemis.Web.Shared.EventUpdates
+﻿@using Artemis.Web.Client.Users
+@using Artemis.Web.Shared.EventUpdates
+
+@inject UserUtilities UserUtilities
 
 <div class="card mb-3" >
     <div class="card-header">
@@ -7,6 +10,11 @@
     <div class="card-body">
         <p class="card-text">@Model.Message</p>
         <a href="#" class="btn btn-primary">Go somewhere</a>
+
+        @if(_canEdit)
+        {
+            <a href="/organization/@OrganizationId/events/@Model.EventId/update/edit/@Model.Id" class="btn btn-primary">Edit</a>
+        }
     </div>
     <div class="card-footer text-muted">
         2 days ago
@@ -15,6 +23,16 @@
 
 
 @code {
-    [Parameter] 
+    [Parameter]
     public EventUpdate Model { get; set; }
+
+    [Parameter]
+    public int OrganizationId { get; set; }
+
+    private bool _canEdit;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _canEdit = await UserUtilities.IsEmployeeOfOrganization(OrganizationId);
+    }
 }

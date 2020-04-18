@@ -6,15 +6,15 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
-        @if (OrganizationId != null)
+        @if (OrganizationId.HasValue)
         {
             <li class="breadcrumb-item"><a href="/organization/@OrganizationId.Value/events">@_organization?.Name</a></li>
-            @if (EventId != null)
+            @if (EventId.HasValue)
             {
                 <li class="breadcrumb-item active" aria-current="page">
-                    @if (UpdateId != null)
+                    @if (UpdateId.HasValue)
                     {
-                        <a href="/organization/@OrganizationId.Value/events/@EventId">@_event.Name</a>
+                        <a href="/organization/@OrganizationId.Value/events/@EventId.Value">@_event?.Name</a>
                     }
                     else
                     {

@@ -10,6 +10,14 @@
 
 
 <BreadcrumbView OrganizationId="OrganizationId" />
+
+<AuthorizeView>
+    @if (_isEmployee)
+    {
+        <a class="btn btn-primary" href="/organization/@OrganizationId/events/create/">Create Event</a>
+    }
+</AuthorizeView>
+
 <OrgJumbotron Organization="@_organization" DisplayCallToAction="true" />
 
 @if (_events == null)
@@ -60,13 +68,6 @@ else
         }
     </div>
 }
-
-<AuthorizeView>
-    @if (_isEmployee)
-    {
-        <a class="btn btn-primary" href="/organization/@OrganizationId/events/create/">Create</a>
-    }
-</AuthorizeView>
 
 @code {
     [Parameter]

@@ -4,12 +4,16 @@
 @using Artemis.Web.Shared.Events
 @using Artemis.Web.Shared.EventUpdates
 
-@inject HttpClient Client
+@inject HttpClientAdapter Client
 @inject UserUtilities UserUtilities
 
-
 <BreadcrumbView OrganizationId="OrganizationId" EventId="EventId" />
-
+<AuthorizeView>
+    @if (_isEmployee)
+    {
+        <a class="btn btn-primary" href="/organization/@OrganizationId/events/@EventId/update/create">Create Update</a>
+    }
+</AuthorizeView>
 <EventJumbotron Event="_event" DisplayCallToAction="true" />
 
 @if (_eventUpdates == null)
@@ -24,16 +28,9 @@ else
 {
     foreach (var update in _eventUpdates)
     {
-        <EventUpdateCard Model="update" />
+        <EventUpdateCard Model="update" OrganizationId="OrganizationId" />
     }
 }
-
-<AuthorizeView>
-    @if (_isEmployee)
-    {
-        <a class="btn btn-primary" href="/organization/@OrganizationId/events/@EventId/update/create">Create</a>
-    }
-</AuthorizeView>
 
 @code {
     [Parameter]

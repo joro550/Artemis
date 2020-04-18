@@ -22,13 +22,13 @@ namespace Artemis.Web.Server.EventUpdates.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet("{id}")]
-        public async Task<EventUpdate> GetEventUpdate(int id) 
-            => await _mediator.Send(new GetEventUpdate {UpdateId = id, Count = 100, Offset = 0});
-
         [HttpGet]
         public async Task<List<EventUpdate>> GetEventUpdates(int organizationId, int eventId) =>
             await _mediator.Send(new GetEventUpdates {OrganizationId = organizationId, EventId = eventId, Count = 100, Offset = 0});
+
+        [HttpGet("{updateId:int}")]
+        public async Task<EventUpdate> GetEventUpdate(int organizationId, int eventId, int updateId) 
+            => await _mediator.Send(new GetEventUpdate {OrganizationId = organizationId, EventId = eventId, UpdateId = updateId, Count = 100, Offset = 0});
 
         [HttpPost]
         [Authorize]

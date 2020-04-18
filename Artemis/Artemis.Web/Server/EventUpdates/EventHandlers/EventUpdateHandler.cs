@@ -40,6 +40,13 @@ namespace Artemis.Web.Server.EventUpdates.EventHandlers
             return _mapper.Map<List<EventUpdate>>(updates ?? new List<EventUpdateEntity>());
         }
 
+        public async Task<EventUpdate> Handle(GetEventUpdate request, CancellationToken cancellationToken)
+        {
+            var update = await _context.Set<EventUpdateEntity>()
+                .FirstOrDefaultAsync(entity => entity.Id == request.UpdateId, cancellationToken);
+            return _mapper.Map<EventUpdate>(update);
+        }
+
         public async Task Handle(CreateEventUpdateNotification notification, CancellationToken cancellationToken)
         {
             var request = _mapper.Map<EventUpdateEntity>(notification.Model);
@@ -54,13 +61,6 @@ namespace Artemis.Web.Server.EventUpdates.EventHandlers
             var updateEntity = _mapper.Map<EventUpdateEntity>(notification.Model);
             _context.Update(updateEntity);
             await _context.SaveChangesAsync(cancellationToken);
-        }
-
-        public async Task<EventUpdate> Handle(GetEventUpdate request, CancellationToken cancellationToken)
-        {
-            var update = await _context.Set<EventUpdateEntity>()
-                .FirstOrDefaultAsync(entity => entity.Id == request.UpdateId, cancellationToken);
-            return _mapper.Map<EventUpdate>(update);
         }
     }
 }
