@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using MediatR;
 using System.Threading.Tasks;
-using Artemis.Web.Server.Events;
 using Artemis.Web.Server.Users;
-using Artemis.Web.Shared.EventUpdates;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Artemis.Web.Server.Events;
+using System.Collections.Generic;
+using Artemis.Web.Shared.EventUpdates;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Artemis.Web.Server.EventUpdates.Controllers
 {

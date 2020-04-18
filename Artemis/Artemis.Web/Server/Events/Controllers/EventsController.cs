@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using MediatR;
 using System.Threading.Tasks;
-using Artemis.Web.Server.Organizations;
 using Artemis.Web.Server.Users;
-using Artemis.Web.Shared.Events;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Artemis.Web.Shared.Events;
+using System.Collections.Generic;
+using Artemis.Web.Server.Organizations;
+using Microsoft.AspNetCore.Authorization;
 using CreateEvent = Artemis.Web.Shared.Events.CreateEvent;
 
 namespace Artemis.Web.Server.Events.Controllers
@@ -49,7 +49,6 @@ namespace Artemis.Web.Server.Events.Controllers
             await _mediator.Publish(new CreateEventNotification {Event = model});
             return Ok();
         }
-
 
         [HttpPut]
         [Authorize]

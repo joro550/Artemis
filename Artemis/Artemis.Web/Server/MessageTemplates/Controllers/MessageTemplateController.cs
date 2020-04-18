@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using MediatR;
 using System.Threading.Tasks;
-using Artemis.Web.Server.Organizations;
 using Artemis.Web.Server.Users;
-using Artemis.Web.Shared.MessageTemplates;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using Artemis.Web.Server.Organizations;
+using Artemis.Web.Shared.MessageTemplates;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Artemis.Web.Server.MessageTemplates.Controllers
 {

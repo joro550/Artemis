@@ -48,9 +48,11 @@ namespace Artemis.Web.Server.EventUpdates.EventHandlers
             await _mediator.Publish(new EventUpdateCreated {Id = result.Entity.Id}, cancellationToken);
         }
 
-        public Task Handle(EditEventUpdateNotification notification, CancellationToken cancellationToken)
+        public async Task Handle(EditEventUpdateNotification notification, CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            var updateEntity = _mapper.Map<EventUpdateEntity>(notification.Model);
+            _context.Update(updateEntity);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

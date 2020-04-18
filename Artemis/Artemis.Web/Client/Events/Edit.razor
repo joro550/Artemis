@@ -1,6 +1,6 @@
 ﻿@page "/organization/{OrganizationId:int}/events/edit/{EventId:int}"
 
-@inject HttpClientAdapter Http 
+@inject HttpClientAdapter Http
 @inject NavigationManager Navigation
 @inject IAccessTokenProvider AuthenticationService
 
@@ -66,8 +66,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _model.Id = EventId;
-        _model.OrganizationId = OrganizationId;
 
         var canGetToken = await Http.CanGetToken();
         if (!canGetToken.Success)
@@ -82,15 +80,7 @@
 
     private async Task HandleValidSubmit()
     {
-        var httpClient = new HttpClient {BaseAddress = new Uri(Navigation.BaseUri)};
-
-        var tokenResult = await AuthenticationService.RequestAccessToken();
-        if (tokenResult.TryGetToken(out var token))
-        {
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
-            await httpClient.PutJsonAsync($"/api/organization/{OrganizationId}/event", _model);
-
-        }
+        await Http.PutJsonAsync($"/api/organization/{OrganizationId}/event", _model);
         Navigation.NavigateTo($"/organization/{OrganizationId}/events/");
     }
 }

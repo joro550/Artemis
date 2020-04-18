@@ -88,6 +88,7 @@ namespace Artemis.Web.Server
                     break;
             }
         }
+
         private async Task CreateEventUpdates(EventEntity eventEntity, int maxRecords)
         {
             var updates = new Faker<EventUpdateEntity>()

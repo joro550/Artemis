@@ -1,0 +1,69 @@
+﻿@page "/organization/{OrganizationId:int}/events/{EventId:int}/update/edit/{UpdateId:int}"
+
+@inject HttpClientAdapter Http
+@inject NavigationManager Navigation
+@inject IAccessTokenProvider AuthenticationService
+
+@using Artemis.Web.Shared.Events
+@using Artemis.Web.Shared.EventUpdates
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@attribute [Authorize]
+
+<BreadcrumbView OrganizationId="OrganizationId" EventId="EventId" />
+
+<EditForm Model="@_model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <input type="hidden" @bind="_model.OrganizationId" />
+    <input type="hidden" @bind="_model.EventId" />
+    <input type="hidden" @bind="_model.Id" />
+
+    <div class="form-group">
+        <label>Title</label>
+        <InputText class="form-control" @bind-Value="_model.Title" />
+    </div>
+
+    <div class="form-group">
+        <label>Message</label>
+        <InputTextArea class="form-control" @bind-Value="_model.Message" />
+    </div>
+    <button type="submit">Submit</button>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int OrganizationId { get; set; }
+
+    [Parameter]
+    public int EventId { get; set; }
+
+    [Parameter]
+    public int UpdateId { get; set; }
+
+    private EditEventUpdate _model = new EditEventUpdate();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var tokenResult = await Http.CanGetToken();
+        if (!tokenResult.Success)
+        {
+            Navigation.NavigateTo($"/organization/{OrganizationId}/events/");
+            return;
+        }
+
+
+        var update = await Http.GetJsonAsync<EventUpdate>($"/api/organization/{OrganizationId}/event/{EventId}/update/{UpdateId}");
+        _model.Load(update);
+        _model.OrganizationId = OrganizationId;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await Http.PutJsonAsync($"/api/organization/{OrganizationId}/event/{EventId}/update", _model);
+        Navigation.NavigateTo($"/organization/{OrganizationId}/events/");
+    }
+}

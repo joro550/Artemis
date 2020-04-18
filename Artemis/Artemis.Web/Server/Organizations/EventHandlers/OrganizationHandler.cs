@@ -7,8 +7,8 @@ using Artemis.Web.Server.Data;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Artemis.Web.Server.Data.Models;
-using Artemis.Web.Server.Organizations.Notifications;
 using Artemis.Web.Shared.Organizations;
+using Artemis.Web.Server.Organizations.Notifications;
 
 namespace Artemis.Web.Server.Organizations.EventHandlers
 {
@@ -63,9 +63,17 @@ namespace Artemis.Web.Server.Organizations.EventHandlers
                 cancellationToken);
         }
 
-        public Task Handle(EditOrganizationNotification notification, CancellationToken cancellationToken)
+        public async Task Handle(EditOrganizationNotification notification, CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            var organizationEntity = _mapper.Map<OrganizationEntity>(notification.Organization);
+
+            var orgFromDb = await _context.Set<OrganizationEntity>()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(entity => entity.Id == notification.Organization.Id, cancellationToken);
+
+            organizationEntity.IsPublished = orgFromDb.IsPublished;
+            _context.Update(organizationEntity);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

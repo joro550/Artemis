@@ -6,5 +6,13 @@ namespace Artemis.Web.Shared.EventUpdates
     {
         [Required]
         public int Id { get; set; }
+
+        public void Load(EventUpdate update)
+        {
+            Id = update.Id;
+            Title = update.Title;
+            Message = update.Message;
+            EventId = update.EventId;
+        }
     }
 }

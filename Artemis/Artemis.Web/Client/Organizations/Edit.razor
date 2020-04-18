@@ -1,0 +1,54 @@
+﻿@page "/organizations/edit/{OrganizationId:int}"
+
+@inject HttpClientAdapter Http
+@inject NavigationManager Navigation
+@inject IAccessTokenProvider AuthenticationService
+
+@using Artemis.Web.Shared.Organizations
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+<EditForm Model="@_model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <input type="hidden" @bind="_model.Id" />
+
+    <div class="form-group">
+        <label>Name</label>
+        <InputText class="form-control" @bind-Value="_model.Name" />
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <InputTextArea class="form-control" @bind-Value="_model.Description" />
+    </div>
+
+    <button class="btn" type="submit">Submit</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int OrganizationId { get; set; }
+
+    private EditOrganization _model = new EditOrganization();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var tokeResult = await Http.CanGetToken();
+        if (!tokeResult.Success)
+        {
+
+            Navigation.NavigateTo("organizations");
+            return;
+        }
+
+        var organization = await Http.GetJsonAsync<Organization>($"/api/organization/{OrganizationId}");
+        _model.Load(organization);
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await Http.PutJsonAsync("/api/organization", _model);
+        Navigation.NavigateTo("organizations");
+    }
+}

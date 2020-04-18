@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using MediatR;
+using AutoMapper;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Artemis.Web.Client.Events;
 using Artemis.Web.Server.Data;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Artemis.Web.Server.Data.Models;
 using Artemis.Web.Shared.MessageTemplates;
-using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Artemis.Web.Server.MessageTemplates.EventHandlers
 {
@@ -26,7 +25,6 @@ namespace Artemis.Web.Server.MessageTemplates.EventHandlers
             _mapper = mapper;
             _context = context;
         }
-
 
         public async Task<List<MessageTemplate>> Handle(GetMessageTemplates request, CancellationToken cancellationToken)
         {
@@ -55,9 +53,12 @@ namespace Artemis.Web.Server.MessageTemplates.EventHandlers
 
         }
 
-        public Task Handle(EditMessageTemplateNotification notification, CancellationToken cancellationToken)
+        public async Task Handle(EditMessageTemplateNotification notification, CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            var templateEntity = _mapper.Map<MessageTemplateEntity>(notification.Model);
+            
+            _context.Set<MessageTemplateEntity>().Update(templateEntity);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }
