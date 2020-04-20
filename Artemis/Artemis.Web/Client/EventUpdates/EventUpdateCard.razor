@@ -8,7 +8,9 @@
         @Model.Title
     </div>
     <div class="card-body">
-        <p class="card-text">@Model.Message</p>
+        <p class="card-text">
+            @((MarkupString)Markdig.Markdown.ToHtml(Model.Message))
+        </p>
         @if (!string.IsNullOrWhiteSpace(Model.CallToAction))
         {
             <a href="@Model.CallToAction" class="btn btn-primary">Go somewhere</a>
