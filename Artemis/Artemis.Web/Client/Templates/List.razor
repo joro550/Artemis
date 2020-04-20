@@ -12,6 +12,10 @@
 @attribute [Authorize]
 
 <BreadcrumbView OrganizationId="OrganizationId" />
+<AuthorizeView>
+    <a class="btn btn-primary" href="/organizations/@OrganizationId/template/create">Create</a>
+</AuthorizeView>
+<hr />
 <OrgJumbotron Organization="@_organization" DisplayCallToAction="false" />
 
 <h3>Templates</h3>
@@ -46,9 +50,7 @@ else
     </div>
 }
 
-<AuthorizeView>
-    <a class="btn btn-primary" href="/organizations/@OrganizationId/template/create">Create</a>
-</AuthorizeView>
+
 
 @code {
     [Parameter]

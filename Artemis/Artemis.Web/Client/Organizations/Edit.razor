@@ -5,7 +5,12 @@
 @inject IAccessTokenProvider AuthenticationService
 
 @using Artemis.Web.Shared.Organizations
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@attribute [Authorize]
+
+<BreadcrumbView OrganizationId="OrganizationId" />
 
 <EditForm Model="@_model" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
