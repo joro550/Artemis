@@ -13,6 +13,7 @@ namespace Artemis.Web.Shared.EventUpdates
             Title = update.Title;
             Message = update.Message;
             EventId = update.EventId;
+            CallToAction  = update.CallToAction;
         }
     }
 }
