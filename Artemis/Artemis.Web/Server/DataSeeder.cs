@@ -47,7 +47,7 @@ namespace Artemis.Web.Server
                     .RuleFor(entity => entity.Name, faker => faker.Company.CompanyName())
                     .RuleFor(entity => entity.Description, faker => faker.Company.Bs());
 
-            var maxRecords = 12;
+            var maxRecords = 51;
 
             foreach (var org in organizations.GenerateForever())
             {

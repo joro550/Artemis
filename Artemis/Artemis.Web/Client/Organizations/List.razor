@@ -47,15 +47,19 @@ else
             </div>
         }
     </div>
+
+    <PagerComponent CurrentPage="0" ItemsPerPage="50" TotalItems="_orgCount" OnItemClick="OnPagerClick" />
 }
 
 @code {
+    private int _orgCount;
     private Organization[] _orgs;
     private EmployeeStatusResponse[] _employeeStatuses;
 
     protected override async Task OnInitializedAsync()
     {
         _orgs = await Http.GetJsonAsync<Organization[]>("api/Organization");
+        _orgCount = await Http.GetJsonAsync<int>("/api/Organization/count");
 
         var canGetToken = await Http.CanGetToken();
         if (_orgs.Any() && canGetToken.Success)
@@ -66,5 +70,10 @@ else
         {
             _employeeStatuses = new EmployeeStatusResponse[0];
         }
+    }
+
+    protected async Task OnPagerClick(int page)
+    {
+        _orgs = await Http.GetJsonAsync<Organization[]>($"/api/Organization?offset={page}");
     }
 }

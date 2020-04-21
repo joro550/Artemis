@@ -15,6 +15,7 @@ namespace Artemis.Web.Server.Organizations.EventHandlers
     public class OrganizationHandler
         : IRequestHandler<GetOrganizationById, Organization>,
           IRequestHandler<GetOrganizations, List<Organization>>,
+          IRequestHandler<GetOrganizationCount, int>,
           INotificationHandler<CreateOrganizationNotification>,
           INotificationHandler<EditOrganizationNotification>
     {
@@ -81,6 +82,17 @@ namespace Artemis.Web.Server.Organizations.EventHandlers
             organizationEntity.IsPublished = orgFromDb.IsPublished;
             _context.Set<OrganizationEntity>().Update(organizationEntity);
             await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<int> Handle(GetOrganizationCount request, CancellationToken cancellationToken)
+        {
+            var dbSet = _context.Set<OrganizationEntity>();
+
+            var query = string.IsNullOrWhiteSpace(request.UserId)
+                ? dbSet.Where(entity => entity.IsPublished)
+                : dbSet.Include(entity => entity.Employees)
+                    .Where(entity => entity.IsPublished || entity.Employees.Any(employee => employee.UserId == request.UserId));
+            return await query.CountAsync(cancellationToken);
         }
     }
 }

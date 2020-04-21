@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using Artemis.Web.Server.Users;
-using Microsoft.AspNetCore.Identity;
-using Artemis.Web.Server.Users.Models;
+using System.Collections.Generic;
 using Artemis.Web.Shared.Organizations;
 using Microsoft.AspNetCore.Authorization;
 
@@ -24,10 +22,10 @@ namespace Artemis.Web.Server.Organizations.Controllers
         }
 
         [HttpGet("")]
-        public async Task<List<Organization>> GetAllOrganizations()
+        public async Task<List<Organization>> GetAllOrganizations([FromQuery] int? count, [FromQuery] int? offset)
         {
             var user = await _userManager.GetUserAsync(User);
-            return await _mediator.Send(new GetOrganizations {Count = 50, Offset = 0, UserId = user.User?.Id});
+            return await _mediator.Send(new GetOrganizations {Count = count ?? 50, Offset = offset ?? 0, UserId = user.User?.Id});
         }
 
         [HttpGet("{id}")]
@@ -35,6 +33,13 @@ namespace Artemis.Web.Server.Organizations.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             return await _mediator.Send(new GetOrganizationById {Id = id, UserId = user.User?.Id});
+        }
+
+        [HttpGet("count")]
+        public async Task<int> GetOrganizationCount()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return await _mediator.Send(new GetOrganizationCount() { UserId = user.User?.Id });
         }
 
         [HttpPost]

@@ -1,0 +1,63 @@
+﻿<nav>
+    <ul class="pagination">
+        @if (CurrentPage != 0)
+        {
+            <li class="page-item">
+                <a class="page-link" @onclick="@(async () => { await GoToPage(0); })">First</a>
+            </li>
+
+            <li class="page-item">
+                <a class="page-link" @onclick="@(async () => { await GoToPage(CurrentPage - 1); })">Previous</a>
+            </li>
+        }
+        
+        @for (var i = 0; i < CalculateTotalPages(); i++)
+        {
+            <li class="page-item">
+                <a class="page-link" @onclick="@(async () => { await GoToPage(i); })">@(i + 1)</a>
+            </li>
+        }
+
+        @if (CurrentPage != CalculateTotalPages())
+        {
+            <li class="page-item"><a class="page-link" @onclick="@(async () => { await GoToPage(CurrentPage + 1); })">Next</a></li>
+            <li class="page-item"><a class="page-link" @onclick="@(async () => { await GoToPage(CalculateTotalPages()); })">Last</a></li>
+        }
+    </ul>
+</nav>
+
+@code {
+    [Parameter]
+    public int CurrentPage { get; set; }
+
+    [Parameter]
+    public int ItemsPerPage { get; set; }
+
+    [Parameter]
+    public int TotalItems { get; set; }
+
+    [Parameter]
+    public Func<int, Task> OnItemClick { get; set; }
+
+    private int CalculateTotalPages()
+    {
+        if (TotalItems <= ItemsPerPage)
+            return 1;
+
+        // 0 base index
+        return TotalItems / ItemsPerPage - 1;
+    }
+
+    private async Task GoToPage(int page)
+    {
+        var calculateTotalPages = CalculateTotalPages();
+
+        if (page <= 0)
+            page = 0;
+        if (page >= calculateTotalPages)
+            page = calculateTotalPages;
+
+        await OnItemClick(page);
+        StateHasChanged();
+    }
+}
