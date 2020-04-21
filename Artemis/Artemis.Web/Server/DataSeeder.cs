@@ -89,8 +89,10 @@ namespace Artemis.Web.Server
                 
                 count++;
 
-                if (count >= maxRecords)
-                    break;
+                if (count < maxRecords) continue;
+
+                await _context.SaveChangesAsync();
+                break;
             }
 
             foreach (var eventEntity in _context.Events.Where(evt => evt.OrganizationId == org.Id))

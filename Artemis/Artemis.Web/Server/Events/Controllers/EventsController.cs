@@ -38,7 +38,7 @@ namespace Artemis.Web.Server.Events.Controllers
         }
 
         [HttpGet("count")]
-        public async Task<int> GetEventCount([FromQuery]int? organizationId)
+        public async Task<int> GetEventCount(int organizationId)
         {
             var user = await _userManager.GetUserAsync(User);
             return await _mediator.Send(new GetEventCount { UserId = user.User?.Id, OrganizationId = organizationId });
