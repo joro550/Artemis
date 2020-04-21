@@ -25,7 +25,10 @@ namespace Artemis.Web.Server.Events.Controllers
 
         [HttpGet]
         public async Task<List<Event>> GetEventsForOrganization(int organizationId)
-            => await _mediator.Send(new GetEvents {OrganizationId = organizationId, Offset = 0, Count = 50});
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return await _mediator.Send(new GetEvents {OrganizationId = organizationId, UserId = user.User?.Id, Offset = 0, Count = 50});
+        }
 
 
         [HttpGet("{id}")]

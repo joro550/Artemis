@@ -7,8 +7,8 @@ namespace Artemis.Web.Server.Messaging.Adapters
     {
         private readonly TwilioConfig _config;
 
-        public TwilioMessageAdapterFactory(TwilioConfig config)
-            => _config = config;
+        public TwilioMessageAdapterFactory(IOptions<TwilioConfig> config)
+            => _config = config.Value;
 
         public MessagingClientAdapter GetMessagingClient()
         {

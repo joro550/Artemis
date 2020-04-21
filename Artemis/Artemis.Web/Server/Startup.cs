@@ -57,6 +57,7 @@ namespace Artemis.Web.Server
             services.AddTransient<DataSeeder>();
             services.AddTransient<UserAdapter>();
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddSingleton<TwilioMessageAdapterFactory>();
 
             services.AddTransient(sp => sp.GetService<TwilioMessageAdapterFactory>()
                 .GetMessagingClient());
