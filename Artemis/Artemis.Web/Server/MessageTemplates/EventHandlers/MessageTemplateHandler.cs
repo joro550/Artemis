@@ -13,6 +13,7 @@ namespace Artemis.Web.Server.MessageTemplates.EventHandlers
 {
     public class MessageTemplateHandler
         :   IRequestHandler<GetMessageTemplates, List<MessageTemplate>>,    
+            IRequestHandler<GetMessageTemplateCount, int>,
             IRequestHandler<GetMessageTemplate, MessageTemplate>,
             INotificationHandler<CreateMessageTemplateNotification>,
             INotificationHandler<EditMessageTemplateNotification>
@@ -30,10 +31,17 @@ namespace Artemis.Web.Server.MessageTemplates.EventHandlers
         {
             var templates = await _context.Set<MessageTemplateEntity>()
                 .Where(template => template.OrganizationId == request.OrganizationId)
-                .Skip(request.Offset)
+                .Skip(request.Offset * request.Count)
                 .Take(request.Count)
                 .ToListAsync(cancellationToken);
             return _mapper.Map<List<MessageTemplate>>(templates ?? new List<MessageTemplateEntity>());
+        }
+
+        public async Task<int> Handle(GetMessageTemplateCount request, CancellationToken cancellationToken)
+        {
+            return await _context.Set<MessageTemplateEntity>()
+                .Where(entity => entity.OrganizationId == request.OrganizationId)
+                .CountAsync(cancellationToken);
         }
 
         public async Task<MessageTemplate> Handle(GetMessageTemplate request, CancellationToken cancellationToken)
@@ -41,7 +49,6 @@ namespace Artemis.Web.Server.MessageTemplates.EventHandlers
             var template = await _context.Set<MessageTemplateEntity>()
                 .SingleOrDefaultAsync(entity => entity.Id == request.Id, cancellationToken);
             return _mapper.Map<MessageTemplate>(template ?? new MessageTemplateEntity());
-
         }
 
         public async Task Handle(CreateMessageTemplateNotification notification, CancellationToken cancellationToken)
@@ -50,7 +57,6 @@ namespace Artemis.Web.Server.MessageTemplates.EventHandlers
             var response = await _context.Set<MessageTemplateEntity>()
                 .AddAsync(request, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-
         }
 
         public async Task Handle(EditMessageTemplateNotification notification, CancellationToken cancellationToken)

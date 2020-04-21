@@ -24,12 +24,16 @@ namespace Artemis.Web.Server.MessageTemplates.Controllers
         }
 
         [HttpGet]
-        public async Task<List<MessageTemplate>> GetOrganizationTemplates(int organizationId) =>
-            await _mediator.Send(new GetMessageTemplates{Count = 50, Offset = 0, OrganizationId = organizationId});
+        public async Task<List<MessageTemplate>> GetOrganizationTemplates(int organizationId, [FromQuery] int? count, [FromQuery] int? offset) =>
+            await _mediator.Send(new GetMessageTemplates{Count = count ?? 50, Offset = offset ?? 0, OrganizationId = organizationId});
 
         [HttpGet("{templateId:int}")]
         public async Task<MessageTemplate> GetMessageTemplate(int organizationId, int templateId) 
             => await _mediator.Send(new GetMessageTemplate {Id = templateId, OrganizationId = organizationId});
+
+        [HttpGet("count")]
+        public async Task<int> GetMessageTemplateCount(int organizationId) 
+            => await _mediator.Send(new GetMessageTemplateCount {OrganizationId = organizationId});
 
         [HttpPost]
         [Authorize]

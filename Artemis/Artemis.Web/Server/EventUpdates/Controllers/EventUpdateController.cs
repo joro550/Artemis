@@ -23,12 +23,16 @@ namespace Artemis.Web.Server.EventUpdates.Controllers
         }
 
         [HttpGet]
-        public async Task<List<EventUpdate>> GetEventUpdates(int organizationId, int eventId) =>
-            await _mediator.Send(new GetEventUpdates {OrganizationId = organizationId, EventId = eventId, Count = 100, Offset = 0});
+        public async Task<List<EventUpdate>> GetEventUpdates(int organizationId, int eventId, [FromQuery] int? count, [FromQuery] int? offset) =>
+            await _mediator.Send(new GetEventUpdates {OrganizationId = organizationId, EventId = eventId, Count = count ?? 50, Offset = offset ?? 0});
 
         [HttpGet("{updateId:int}")]
         public async Task<EventUpdate> GetEventUpdate(int organizationId, int eventId, int updateId) 
-            => await _mediator.Send(new GetEventUpdate {OrganizationId = organizationId, EventId = eventId, UpdateId = updateId, Count = 100, Offset = 0});
+            => await _mediator.Send(new GetEventUpdate {OrganizationId = organizationId, EventId = eventId, UpdateId = updateId});
+
+        [HttpGet("count")]
+        public async Task<int> GetEventUpdateCount(int eventId) 
+            => await _mediator.Send(new GetEventUpdateCount {EventId = eventId});
 
         [HttpPost]
         [Authorize]

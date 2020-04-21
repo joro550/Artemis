@@ -6,8 +6,7 @@
 @using Artemis.Web.Shared.MessageTemplates
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
-@inject NavigationManager Navigation
-@inject IAccessTokenProvider AuthenticationService
+@inject HttpClientAdapter Http
 
 @attribute [Authorize]
 
@@ -48,31 +47,28 @@ else
             </div>
         }
     </div>
+
+    <PagerComponent ItemsPerPage="50" TotalItems="_templateCount" OnItemClick="OnPagerClick" />
 }
-
-
 
 @code {
     [Parameter]
     public int OrganizationId { get; set; }
 
+    private int _templateCount;
     private Organization _organization;
     private MessageTemplate[] _templates;
 
     protected override async Task OnInitializedAsync()
     {
-        var httpClient = new HttpClient { BaseAddress = new Uri(Navigation.BaseUri) };
+        _organization = await Http.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
+        _templates = await Http.GetJsonAsync<MessageTemplate[]>($"api/organization/{OrganizationId}/template");
+        _templateCount = await Http.GetJsonAsync<int>($"api/organization/{OrganizationId}/template/count");
+    }
 
-        var tokenResult = await AuthenticationService.RequestAccessToken();
-        if (tokenResult.TryGetToken(out var token))
-        {
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
-            _organization = await httpClient.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
-            _templates = await httpClient.GetJsonAsync<MessageTemplate[]>($"api/organization/{OrganizationId}/template");
-        }
-        else
-        {
-            Navigation.NavigateTo("organizations");
-        }
+    protected async Task OnPagerClick(int page)
+    {
+        _templates = await Http.GetJsonAsync<MessageTemplate[]>($"api/organization/{OrganizationId}/template?offset={page}");
+        StateHasChanged();
     }
 }

@@ -17,7 +17,7 @@
         <a class="btn btn-primary" href="/organization/@OrganizationId/events/create/">Create Event</a>
     }
 </AuthorizeView>
-<hr/>
+<hr />
 
 <OrgJumbotron Organization="@_organization" DisplayCallToAction="true" />
 
@@ -68,12 +68,15 @@ else
             </div>
         }
     </div>
+
+    <PagerComponent ItemsPerPage="50" TotalItems="_eventCount" OnItemClick="OnPagerClick" />
 }
 
 @code {
     [Parameter]
     public int OrganizationId { get; set; }
 
+    private int _eventCount;
     private Event[] _events;
     private bool _isEmployee;
     private Organization _organization;
@@ -82,7 +85,14 @@ else
     {
         _organization = await Http.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
         _events = await Http.GetJsonAsync<Event[]>($"api/organization/{OrganizationId}/event");
+        _eventCount = await Http.GetJsonAsync<int>($"api/organization/{OrganizationId}/event/count");
 
         _isEmployee = await UserUtilities.IsEmployeeOfOrganization(OrganizationId);
+    }
+
+    protected async Task OnPagerClick(int page)
+    {
+        _events = await Http.GetJsonAsync<Event[]>($"api/organization/{OrganizationId}/event?offset={page}");
+        StateHasChanged();
     }
 }

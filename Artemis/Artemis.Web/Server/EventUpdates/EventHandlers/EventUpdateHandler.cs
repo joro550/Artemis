@@ -14,6 +14,7 @@ namespace Artemis.Web.Server.EventUpdates.EventHandlers
 {
     public class EventUpdateHandler
         :   IRequestHandler<GetEventUpdate, EventUpdate>,
+            IRequestHandler<GetEventUpdateCount, int>,
             INotificationHandler<EditEventUpdateNotification>,
             IRequestHandler<GetEventUpdates, List<EventUpdate>>,
             INotificationHandler<CreateEventUpdateNotification>
@@ -33,11 +34,21 @@ namespace Artemis.Web.Server.EventUpdates.EventHandlers
         {
             var updates = await _context.Set<EventUpdateEntity>()
                 .Where(entity => entity.EventId == request.EventId)
-                .Skip(request.Offset)
+                .Skip(request.Offset * request.Count)
                 .Take(request.Count)
                 .ToListAsync(cancellationToken);
 
             return _mapper.Map<List<EventUpdate>>(updates ?? new List<EventUpdateEntity>());
+        }
+
+        public async Task<int> Handle(GetEventUpdateCount request, CancellationToken cancellationToken)
+        {
+            var updates = _context.Set<EventUpdateEntity>()
+                .AsQueryable();
+            
+            if (request.EventId.HasValue)
+                updates = updates.Where(entity => entity.EventId == request.EventId.Value);
+            return await updates.CountAsync(cancellationToken);
         }
 
         public async Task<EventUpdate> Handle(GetEventUpdate request, CancellationToken cancellationToken)

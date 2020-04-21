@@ -24,18 +24,24 @@ namespace Artemis.Web.Server.Events.Controllers
         }
 
         [HttpGet]
-        public async Task<List<Event>> GetEventsForOrganization(int organizationId)
+        public async Task<List<Event>> GetEventsForOrganization(int organizationId, [FromQuery] int? count, [FromQuery] int? offset)
         {
             var user = await _userManager.GetUserAsync(User);
-            return await _mediator.Send(new GetEvents {OrganizationId = organizationId, UserId = user.User?.Id, Offset = 0, Count = 50});
+            return await _mediator.Send(new GetEvents {OrganizationId = organizationId, UserId = user.User?.Id, Offset = offset ?? 0, Count = count ?? 50 });
         }
-
 
         [HttpGet("{id}")]
         public async Task<Event> GetEvent(int organizationId, int id)
         {
             var user = await _userManager.GetUserAsync(User);
             return await _mediator.Send(new GetEvent {Id = id, UserId = user.User?.Id, OrganizationId = organizationId});
+        }
+
+        [HttpGet("count")]
+        public async Task<int> GetEventCount([FromQuery]int? organizationId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return await _mediator.Send(new GetEventCount { UserId = user.User?.Id, OrganizationId = organizationId });
         }
 
         [HttpPost]

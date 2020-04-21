@@ -1,5 +1,5 @@
-﻿using Artemis.Web.Shared.EventUpdates;
-using MediatR;
+﻿using MediatR;
+using Artemis.Web.Shared.EventUpdates;
 
 namespace Artemis.Web.Server.EventUpdates
 {
@@ -8,8 +8,5 @@ namespace Artemis.Web.Server.EventUpdates
         public int EventId { get; set; }
         public int UpdateId { get; set; }
         public int OrganizationId { get; set; }
-
-        public int Count { get; set; }
-        public int Offset { get; set; }
     }
 }

@@ -12,10 +12,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Artemis.Web.Server.Events.EventHandlers
 {
     public class EventsHandler
-        : IRequestHandler<GetEvent, Event>, 
-          IRequestHandler<GetEvents, List<Event>>,
-          INotificationHandler<CreateEventNotification>,
-          INotificationHandler<UpdateEventNotification>
+        :   IRequestHandler<GetEvent, Event>,
+            IRequestHandler<GetEventCount, int>,
+            IRequestHandler<GetEvents, List<Event>>,
+            INotificationHandler<CreateEventNotification>,
+            INotificationHandler<UpdateEventNotification>
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
@@ -51,10 +52,25 @@ namespace Artemis.Web.Server.Events.EventHandlers
                     .Where(entity => entity.IsPublished || entity.Organization.Employees.Any(employeeEntity => employeeEntity.UserId == request.UserId));
 
             var events = await query.Where(entity => entity.OrganizationId == request.OrganizationId)
-                .Skip(request.Offset)
+                .Skip(request.Offset * request.Count)
                 .Take(request.Count)
                 .ToListAsync(cancellationToken);
             return _mapper.Map<List<Event>>(events);
+        }
+
+        public async Task<int> Handle(GetEventCount request, CancellationToken cancellationToken)
+        {
+            var dbSet = _context.Set<EventEntity>();
+
+            var query = string.IsNullOrWhiteSpace(request.UserId)
+                ? dbSet.Where(entity => entity.IsPublished)
+                : dbSet.Include(entity => entity.Organization).ThenInclude(organization => organization.Employees)
+                    .Where(entity => entity.IsPublished || entity.Organization.Employees.Any(employeeEntity => employeeEntity.UserId == request.UserId));
+
+            if (request.OrganizationId.HasValue)
+                query = query.Where(entity => entity.OrganizationId == request.OrganizationId.Value);
+
+            return await query.CountAsync(cancellationToken);
         }
 
         public async Task Handle(CreateEventNotification notification, CancellationToken cancellationToken)
