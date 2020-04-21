@@ -5,7 +5,7 @@ namespace Artemis.Web.Server.Organizations
 {
     public class CreateOrganizationNotification : INotification
     {
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         public CreateOrganization Organization { get; set; }
     }
 }

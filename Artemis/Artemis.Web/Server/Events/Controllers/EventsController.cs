@@ -33,7 +33,10 @@ namespace Artemis.Web.Server.Events.Controllers
 
         [HttpGet("{id}")]
         public async Task<Event> GetEvent(int organizationId, int id)
-            => await _mediator.Send(new GetEvent {Id = id, OrganizationId = organizationId});
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return await _mediator.Send(new GetEvent {Id = id, UserId = user.User?.Id, OrganizationId = organizationId});
+        }
 
         [HttpPost]
         [Authorize]

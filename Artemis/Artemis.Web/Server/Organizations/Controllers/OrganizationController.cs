@@ -32,7 +32,10 @@ namespace Artemis.Web.Server.Organizations.Controllers
 
         [HttpGet("{id}")]
         public async Task<Organization> GetOrganization(int id)
-            => await _mediator.Send(new GetOrganizationById {Id = id});
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return await _mediator.Send(new GetOrganizationById {Id = id, UserId = user.User?.Id});
+        }
 
         [HttpPost]
         [Authorize]

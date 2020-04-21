@@ -30,8 +30,14 @@ namespace Artemis.Web.Server.Events.EventHandlers
 
         public async Task<Event> Handle(GetEvent request, CancellationToken cancellationToken)
         {
-            var @event = await _context.Set<EventEntity>()
-                .SingleOrDefaultAsync(org => org.Id == request.Id, cancellationToken);
+            var dbSet = _context.Set<EventEntity>();
+
+            var query = string.IsNullOrWhiteSpace(request.UserId)
+                ? dbSet.Where(entity => entity.IsPublished)
+                : dbSet.Include(entity => entity.Organization).ThenInclude(organization => organization.Employees)
+                    .Where(entity => entity.IsPublished || entity.Organization.Employees.Any(employeeEntity => employeeEntity.UserId == request.UserId));
+
+            var @event = await query.SingleOrDefaultAsync(org => org.Id == request.Id, cancellationToken);
             return _mapper.Map<Event>(@event ?? new EventEntity());
         }
 
