@@ -53,7 +53,7 @@ namespace Artemis.Web.Server.Organizations.EventHandlers
                 : dbSet.Include(entity => entity.Employees)
                     .Where(entity => entity.IsPublished || entity.Employees.Any(employee => employee.UserId == request.UserId));
 
-             var organization = await query.Skip(request.Offset)
+             var organization = await query.Skip(request.Offset * request.Count)
                 .Take(request.Count)
                 .ToListAsync(cancellationToken);
             return _mapper.Map<List<Organization>>(organization);

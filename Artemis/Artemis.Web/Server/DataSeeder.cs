@@ -47,20 +47,26 @@ namespace Artemis.Web.Server
                     .RuleFor(entity => entity.Name, faker => faker.Company.CompanyName())
                     .RuleFor(entity => entity.Description, faker => faker.Company.Bs());
 
-            var maxRecords = 51;
+            const int maxRecords = 51;
 
-            foreach (var org in organizations.GenerateForever())
+            var count = 0;
+            foreach (var entity in organizations.GenerateForever())
             {
-                await _context.Organizations.AddAsync(org);
+                await _context.Organizations.AddAsync(entity);
+                count++;
+                if (count < maxRecords) continue;
+
                 await _context.SaveChangesAsync();
+                break;
+            }
 
-                await _context.Employees.AddAsync(new EmployeeEntity {OrganizationId = org.Id, UserId = user.Id});
+            foreach (var organizationEntity in _context.Organizations.ToList())
+            {
+                await _context.Employees.AddAsync(new EmployeeEntity
+                    {OrganizationId = organizationEntity.Id, UserId = user.Id});
 
-                await CreateEvents(org, maxRecords);
-                await CreateTemplates(org, maxRecords);
-
-                if (_context.Organizations.Count() >= maxRecords)
-                    break;
+                await CreateEvents(organizationEntity, maxRecords);
+                await CreateTemplates(organizationEntity, maxRecords);
             }
 
             await _context.SaveChangesAsync();
@@ -74,18 +80,22 @@ namespace Artemis.Web.Server
                 .RuleFor(entity => entity.Description, faker => faker.Lorem.Paragraph())
                 .RuleFor(entity => entity.EventType, faker => faker.Random.Enum<EventType>());
 
-            foreach (var @event in events.GenerateForever())
+            var count = 0;
+
+            foreach (var eventEntity in events.GenerateForever())
             {
-                @event.OrganizationId = org.Id;
-                await _context.Events.AddAsync(@event);
-                await _context.SaveChangesAsync();
-
-                await CreateEventUpdates(@event, maxRecords);
-
-                var count = _context.Events.Count(entity => entity.OrganizationId == org.Id);
+                eventEntity.OrganizationId = org.Id;
+                await _context.Events.AddAsync(eventEntity);
+                
+                count++;
 
                 if (count >= maxRecords)
                     break;
+            }
+
+            foreach (var eventEntity in _context.Events.Where(evt => evt.OrganizationId == org.Id))
+            {
+                await CreateEventUpdates(eventEntity, maxRecords);
             }
         }
 
@@ -95,17 +105,18 @@ namespace Artemis.Web.Server
                 .RuleFor(entity => entity.Title, faker => string.Join(" ", faker.Lorem.Words()))
                 .RuleFor(entity => entity.Message, faker => faker.Lorem.Paragraphs(3));
 
+            var count = 0;
             foreach (var update in updates.GenerateForever())
             {
                 update.EventId = eventEntity.Id;
 
                 await _context.EventUpdate.AddAsync(update);
+
+                count++;
+                if (count < maxRecords) continue;
+
                 await _context.SaveChangesAsync();
-
-                var count = _context.EventUpdate.Count(entity => entity.EventId == eventEntity.Id);
-
-                if (count >= maxRecords)
-                    break;
+                break;
             }
         }
 
@@ -117,16 +128,17 @@ namespace Artemis.Web.Server
                 .RuleFor(entity => entity.Text, faker => faker.Lorem.Paragraph())
                 .RuleFor(entity => entity.MessageEvent, faker => faker.Random.Enum<MessageEvent>());
 
+            var count = 0;
             foreach (var @event in template.GenerateForever())
             {
                 @event.OrganizationId = org.Id;
                 await _context.MessageTemplates.AddAsync(@event);
+
+                count++;
+                if (count < maxRecords) continue;
+                
                 await _context.SaveChangesAsync();
-
-                var count = _context.MessageTemplates.Count(entity => entity.OrganizationId == org.Id);
-
-                if (count >= maxRecords)
-                    break;
+                break;
             }
         }
     }

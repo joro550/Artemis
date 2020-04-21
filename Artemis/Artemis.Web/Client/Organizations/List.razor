@@ -48,7 +48,7 @@ else
         }
     </div>
 
-    <PagerComponent CurrentPage="0" ItemsPerPage="50" TotalItems="_orgCount" OnItemClick="OnPagerClick" />
+    <PagerComponent ItemsPerPage="50" TotalItems="_orgCount" OnItemClick="OnPagerClick" />
 }
 
 @code {
@@ -75,5 +75,6 @@ else
     protected async Task OnPagerClick(int page)
     {
         _orgs = await Http.GetJsonAsync<Organization[]>($"/api/Organization?offset={page}");
+        StateHasChanged();
     }
 }

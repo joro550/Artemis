@@ -1,34 +1,41 @@
-﻿<nav>
-    <ul class="pagination">
-        @if (CurrentPage != 0)
-        {
-            <li class="page-item">
-                <a class="page-link" @onclick="@(async () => { await GoToPage(0); })">First</a>
-            </li>
+﻿@if (CalculateTotalPages() >= 1)
+{
+    <footer class="mt-auto py-3">
+        <div class="container">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link" @onclick="@(async () => { await GoToPage(0); })">First</a>
+                    </li>
 
-            <li class="page-item">
-                <a class="page-link" @onclick="@(async () => { await GoToPage(CurrentPage - 1); })">Previous</a>
-            </li>
-        }
-        
-        @for (var i = 0; i < CalculateTotalPages(); i++)
-        {
-            <li class="page-item">
-                <a class="page-link" @onclick="@(async () => { await GoToPage(i); })">@(i + 1)</a>
-            </li>
-        }
+                    <li class="page-item">
+                        <a class="page-link" @onclick="@(async () => { await GoToPage(_currentPage - 1); })">Previous</a>
+                    </li>
 
-        @if (CurrentPage != CalculateTotalPages())
-        {
-            <li class="page-item"><a class="page-link" @onclick="@(async () => { await GoToPage(CurrentPage + 1); })">Next</a></li>
-            <li class="page-item"><a class="page-link" @onclick="@(async () => { await GoToPage(CalculateTotalPages()); })">Last</a></li>
-        }
-    </ul>
-</nav>
+                    @{ var totalPages = CalculateTotalPages(); }
+                    @for (var i = 0; i < CalculateTotalPages() + 1; i++)
+                    {
+                        var page = i;
+
+                        Console.WriteLine("Yo: " + (_currentPage) + "i = " + i);
+                        var activeClass = _currentPage == i ? "active" : string.Empty;
+
+
+                        <li class="page-item @activeClass">
+                            <a class="page-link" @onclick="@(async () => { await GoToPage(page); })">@(i + 1)</a>
+                        </li>
+                    }
+
+                    <li class="page-item"><a class="page-link" @onclick="@(async () => { await GoToPage(_currentPage + 1); })">Next</a></li>
+                    <li class="page-item"><a class="page-link" @onclick="@(async () => { await GoToPage(CalculateTotalPages()); })">Last</a></li>
+                </ul>
+            </nav>
+        </div>
+    </footer>
+}
 
 @code {
-    [Parameter]
-    public int CurrentPage { get; set; }
+    private int _currentPage = 0;
 
     [Parameter]
     public int ItemsPerPage { get; set; }
@@ -45,7 +52,7 @@
             return 1;
 
         // 0 base index
-        return TotalItems / ItemsPerPage - 1;
+        return TotalItems / ItemsPerPage;
     }
 
     private async Task GoToPage(int page)
@@ -58,6 +65,8 @@
             page = calculateTotalPages;
 
         await OnItemClick(page);
+
+        _currentPage = page;
         StateHasChanged();
     }
 }
