@@ -68,7 +68,7 @@ namespace Artemis.Web.Server
             await _userManager.CreateAsync(password: "Ii!62s9cVB&%^hF8",
                 user: new ApplicationUser {Email = "user@email.com", PhoneNumber = _userConfig.PhoneNumber, UserName = "user@email.com", EmailConfirmed = true,PhoneNumberConfirmed = true});
 
-            const int maxRecords = 51;
+            const int maxRecords = 50;
             var user = await _userManager.FindByEmailAsync("user@email.com");
 
             var count = 0;

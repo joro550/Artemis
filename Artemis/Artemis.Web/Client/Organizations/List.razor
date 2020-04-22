@@ -48,23 +48,24 @@ else
         }
     </div>
 
-    <PagerComponent ItemsPerPage="50" TotalItems="_orgCount" OnItemClick="OnPagerClick" />
+    <PagerComponentNew ItemsPerPage="_itemsPerPage" TotalItems="_orgCount" OnItemClick="OnPagerClick" />
 }
 
 @code {
     private int _orgCount;
+    private int _itemsPerPage = 5;
     private Organization[] _orgs;
     private EmployeeStatusResponse[] _employeeStatuses;
 
     protected override async Task OnInitializedAsync()
     {
-        _orgs = await Http.GetJsonAsync<Organization[]>("api/Organization");
+        _orgs = await Http.GetJsonAsync<Organization[]>($"api/Organization?count={_itemsPerPage}");
         _orgCount = await Http.GetJsonAsync<int>("/api/Organization/count");
 
         var canGetToken = await Http.CanGetToken();
         if (_orgs.Any() && canGetToken.Success)
         {
-            _employeeStatuses = await Http.GetJsonAsync<EmployeeStatusResponse[]>("api/employee/status");
+            _employeeStatuses = await Http.GetJsonAsync<EmployeeStatusResponse[]>($"api/employee/status");
         }
         else
         {
@@ -74,7 +75,7 @@ else
 
     protected async Task OnPagerClick(int page)
     {
-        _orgs = await Http.GetJsonAsync<Organization[]>($"/api/Organization?offset={page}");
+        _orgs = await Http.GetJsonAsync<Organization[]>($"/api/Organization?offset={page}&count={_itemsPerPage}");
         StateHasChanged();
     }
 }
