@@ -70,7 +70,7 @@
     private void ProcessPage()
     {
         var pageBuffer = _numberOfPages;
-        var neighbourBuffer = _currentPage > NumberOfNeighbours ? NumberOfNeighbours * 2 + 1 : NumberOfNeighbours * 2;
+        var neighbourBuffer = _currentPage > NumberOfNeighbours + 1 ? NumberOfNeighbours * 2 + 1 : NumberOfNeighbours * 2;
         var startPage = _currentPage > pageBuffer - neighbourBuffer ? pageBuffer - neighbourBuffer : Math.Max(2, _currentPage - NumberOfNeighbours);
 
         _pages = Enumerable.Range(startPage, neighbourBuffer).ToList();
