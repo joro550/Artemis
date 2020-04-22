@@ -48,13 +48,13 @@ else
         }
     </div>
 
-    <PagerComponentNew ItemsPerPage="_itemsPerPage" TotalItems="_orgCount" OnItemClick="OnPagerClick" />
+    <PagerComponentNew NumberOfNeighbours="2" ItemsPerPage="_itemsPerPage" TotalItems="_orgCount" OnItemClick="OnPagerClick" />
 }
 
 @code {
     private int _orgCount;
-    private int _itemsPerPage = 5;
     private Organization[] _orgs;
+    private int _itemsPerPage = 6;
     private EmployeeStatusResponse[] _employeeStatuses;
 
     protected override async Task OnInitializedAsync()

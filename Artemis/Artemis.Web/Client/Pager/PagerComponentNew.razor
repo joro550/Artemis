@@ -5,30 +5,28 @@
                 <a class="page-link" href="#" @onclick="@(async () => await ChangePage(1))">1</a>
             </li>
 
-            @if (ShouldHaveLeftNeighbour())
+            @if (_hasLeftSpill)
             {
                 <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous" @onclick="@(async () => await ChangePage(_currentPage - NumberOfNeighbours))">
-                        <span aria-hidden="true" >
+                    <a class="page-link" href="#" aria-label="Previous" @onclick="@(async () => await ChangePage(_currentPage - (NumberOfNeighbours+1)))">
+                        <span aria-hidden="true">
                             &laquo;
                         </span>
                     </a>
                 </li>
             }
 
-            @for (int i = 0, pageId = GetLeftValue(); i < GetRightValue(); i++, pageId ++)
+            @foreach (var pageId in _pages)
             {
-                var internalLoopPageId = pageId;
-
                 <li class="page-item @GetActiveClass(pageId)">
-                    <a class="page-link" href="#" @onclick="@(async () => await ChangePage(internalLoopPageId))">@pageId</a>
+                    <a class="page-link" href="#" @onclick="@(async () => await ChangePage(pageId))">@pageId</a>
                 </li>
             }
 
-            @if (ShouldHaveRightNeighbour())
+            @if (_hasRightSpill)
             {
                 <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous" @onclick="@(async () => await ChangePage(_currentPage + NumberOfNeighbours))">
+                    <a class="page-link" href="#" aria-label="Previous" @onclick="@(async () => await ChangePage(_currentPage + (NumberOfNeighbours+1)))">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
@@ -42,8 +40,12 @@
 </div>
 
 @code {
+    private int _numberOfPages;
     private int _currentPage = 1;
-    private int _numberOfPages = 0;
+
+    private bool _hasLeftSpill;
+    private bool _hasRightSpill;
+    private List<int> _pages = new List<int>();
 
     [Parameter]
     public double ItemsPerPage { get; set; }
@@ -60,46 +62,32 @@
     protected override void OnInitialized()
     {
         _numberOfPages = (int) Math.Ceiling(TotalItems / ItemsPerPage);
+        ProcessPage();
     }
 
-    private string GetActiveClass(int page)
+    private string GetActiveClass(int page) => _currentPage == page ? "active" : string.Empty;
+
+    private void ProcessPage()
     {
-        return _currentPage == page ? "active" : string.Empty;
-    }
+        var pageBuffer = _numberOfPages;
+        var neighbourBuffer = _currentPage > NumberOfNeighbours ? NumberOfNeighbours * 2 + 1 : NumberOfNeighbours * 2;
+        var startPage = _currentPage > pageBuffer - neighbourBuffer ? pageBuffer - neighbourBuffer : Math.Max(2, _currentPage - NumberOfNeighbours);
 
-    private bool ShouldHaveLeftNeighbour()
-    {
-        var pageBeforeNeighbour = NumberOfNeighbours + 2;
-        var pageNumberToStartPrintingNeighbours = pageBeforeNeighbour + 1;
+        _pages = Enumerable.Range(startPage, neighbourBuffer).ToList();
 
-        return _currentPage >= pageNumberToStartPrintingNeighbours;
-    }
-
-    private bool ShouldHaveRightNeighbour()
-    {
-        var pageBeforeNeighbour = _numberOfPages - (NumberOfNeighbours + 1);
-
-        var pageNumberToStartPrintingNeighbour = pageBeforeNeighbour - 1;
-        return _currentPage <= pageNumberToStartPrintingNeighbour;
-    }
-
-    private int GetLeftValue() => Math.Max(2, _currentPage - NumberOfNeighbours + 1);
-
-    private int GetRightValue()
-    {
-        var thing = _numberOfPages - 1;
-        var rightValue = Math.Max(_currentPage - thing, NumberOfNeighbours + 1);
-        Console.WriteLine(rightValue);
-        return rightValue;
+        _hasLeftSpill = startPage > 2;
+        _hasRightSpill = _currentPage < pageBuffer - neighbourBuffer;
     }
 
     private async Task ChangePage(int pageId)
     {
-        pageId = pageId < 0 ? 0 : pageId;
-        pageId = pageId >= _numberOfPages ? _numberOfPages - 1 : pageId;
+        pageId = Math.Max(1, pageId);
+        pageId = Math.Min(pageId, _numberOfPages);
 
         await OnItemClick(pageId - 1);
         _currentPage = pageId;
+
+        ProcessPage();
         StateHasChanged();
     }
 }
