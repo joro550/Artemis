@@ -16,13 +16,13 @@ namespace Artemis.Web.Server
     public class DataSeeder
     {
         private readonly UserConfig _userConfig;
-        private readonly ApplicationDbContext _context;
+        private readonly Faker<EventEntity> _events;
         private readonly IHostEnvironment _environment;
+        private readonly ApplicationDbContext _context;
+        private readonly Faker<EventUpdateEntity> _updates;
+        private readonly Faker<MessageTemplateEntity> _template;
+        private readonly Faker<OrganizationEntity> _organizations;
         private readonly UserManager<ApplicationUser> _userManager;
-        private Faker<EventEntity> _events;
-        private Faker<EventUpdateEntity> _updates;
-        private Faker<MessageTemplateEntity> _template;
-        private Faker<OrganizationEntity> _organizations;
 
         public DataSeeder(ApplicationDbContext context, IHostEnvironment environment, 
             UserManager<ApplicationUser> userManager, IOptions<UserConfig> userConfig)
