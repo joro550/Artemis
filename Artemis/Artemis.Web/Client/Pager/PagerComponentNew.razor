@@ -75,18 +75,13 @@
         var startPage = Math.Max(2, _currentPage - NumberOfNeighbours);
         var neighbourBuffer = _currentPage > NumberOfNeighbours + 1 ? maxNeighbours + 1 : maxNeighbours;
 
-        var rightSpillStopPage = maxPageNumber - NumberOfNeighbours;
-
         var endPage = startPage + neighbourBuffer;
-        
         var count = endPage <= maxPageNumber ? neighbourBuffer : _numberOfPages - startPage;
-
-        Console.WriteLine($"Count: {count}");
 
         _pages = Enumerable.Range(startPage, count).ToList();
 
         _hasLeftSpill = startPage > 2;
-        _hasRightSpill = _currentPage < rightSpillStopPage;
+        _hasRightSpill = _currentPage < maxPageNumber - NumberOfNeighbours;
     }
 
     private async Task ChangePage(int pageId)
