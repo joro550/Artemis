@@ -4,7 +4,6 @@
 @using Artemis.Web.Shared.Organizations
 @using Microsoft.AspNetCore.Authorization
 @using Artemis.Web.Shared.MessageTemplates
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @inject HttpClientAdapter Http
 
@@ -47,8 +46,7 @@ else
             </div>
         }
     </div>
-
-    <PagerComponent ItemsPerPage="50" TotalItems="_templateCount" OnItemClick="OnPagerClick" />
+    <PagerComponentNew NumberOfNeighbours="2" ItemsPerPage="_itemsPerPage" TotalItems="_templateCount" OnItemClick="OnPagerClick" />
 }
 
 @code {
@@ -56,6 +54,7 @@ else
     public int OrganizationId { get; set; }
 
     private int _templateCount;
+    private int _itemsPerPage = 30;
     private Organization _organization;
     private MessageTemplate[] _templates;
 
@@ -68,7 +67,7 @@ else
 
     protected async Task OnPagerClick(int page)
     {
-        _templates = await Http.GetJsonAsync<MessageTemplate[]>($"api/organization/{OrganizationId}/template?offset={page}");
+        _templates = await Http.GetJsonAsync<MessageTemplate[]>($"api/organization/{OrganizationId}/template?offset={page}&count={_itemsPerPage}");
         StateHasChanged();
     }
 }

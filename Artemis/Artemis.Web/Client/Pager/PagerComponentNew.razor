@@ -2,7 +2,7 @@
     <nav>
         <ul class="pagination justify-content-center">
             <li class="page-item @GetActiveClass(1)">
-                <a class="page-link" href="#" @onclick="@(async () => await ChangePage(1))">1</a>
+                <a class="page-link" @onclick="@(async () => await ChangePage(1))">1</a>
             </li>
 
             @if (_numberOfPages > 1)
@@ -12,7 +12,7 @@
                     @if (_hasLeftSpill)
                     {
                         <li class="page-item">
-                            <a class="page-link" href="#" aria-label="Previous" @onclick="@(async () => await ChangePage(_currentPage - (NumberOfNeighbours + 1)))">
+                            <a class="page-link" aria-label="Previous" @onclick="@(async () => await ChangePage(_currentPage - (NumberOfNeighbours + 1)))">
                                 <span aria-hidden="true">
                                     &laquo;
                                 </span>
@@ -23,14 +23,14 @@
                     @foreach (var pageId in _pages)
                     {
                         <li class="page-item @GetActiveClass(pageId)">
-                            <a class="page-link" href="#" @onclick="@(async () => await ChangePage(pageId))">@pageId</a>
+                            <a class="page-link" @onclick="@(async () => await ChangePage(pageId))">@pageId</a>
                         </li>
                     }
 
                     @if (_hasRightSpill)
                     {
                         <li class="page-item">
-                            <a class="page-link" href="#" aria-label="Previous" @onclick="@(async () => await ChangePage(_currentPage + (NumberOfNeighbours + 1)))">
+                            <a class="page-link" aria-label="Previous" @onclick="@(async () => await ChangePage(_currentPage + (NumberOfNeighbours + 1)))">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
@@ -38,7 +38,7 @@
                 }
 
                 <li class="page-item @GetActiveClass(_numberOfPages)">
-                    <a class="page-link" href="#" @onclick="@(async () => await ChangePage(_numberOfPages))">@_numberOfPages</a>
+                    <a class="page-link" @onclick="@(async () => await ChangePage(_numberOfPages))">@_numberOfPages</a>
                 </li>
             }
         </ul>

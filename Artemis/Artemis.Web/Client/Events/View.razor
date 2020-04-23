@@ -32,7 +32,7 @@ else
         <EventUpdateCard Model="update" OrganizationId="OrganizationId" />
     }
 
-    <PagerComponent ItemsPerPage="50" TotalItems="_updateCount" OnItemClick="OnPagerClick" />
+    <PagerComponentNew NumberOfNeighbours="2" ItemsPerPage="_itemsPerPage" TotalItems="_updateCount" OnItemClick="OnPagerClick" />
 }
 
 @code {
@@ -45,12 +45,13 @@ else
     private Event _event;
     private int _updateCount;
     private bool _isEmployee;
+    private int _itemsPerPage = 30;
     private EventUpdate[] _eventUpdates;
 
     protected override async Task OnInitializedAsync()
     {
         _event = await Client.GetJsonAsync<Event>($"/api/organization/{OrganizationId}/event/{EventId}");
-        _eventUpdates = await Client.GetJsonAsync<EventUpdate[]>($"/api/organization/{OrganizationId}/event/{EventId}/update");
+        _eventUpdates = await Client.GetJsonAsync<EventUpdate[]>($"/api/organization/{OrganizationId}/event/{EventId}/update?count={_itemsPerPage}");
         _updateCount = await Client.GetJsonAsync<int>($"/api/organization/{OrganizationId}/event/{EventId}/update/count");
 
         _isEmployee = await UserUtilities.IsEmployeeOfOrganization(OrganizationId);
@@ -58,7 +59,7 @@ else
 
     protected async Task OnPagerClick(int page)
     {
-        _eventUpdates = await Client.GetJsonAsync<EventUpdate[]>($"/api/organization/{OrganizationId}/event/{EventId}/update?offset={page}");
+        _eventUpdates = await Client.GetJsonAsync<EventUpdate[]>($"/api/organization/{OrganizationId}/event/{EventId}/update?offset={page}&count={_itemsPerPage}");
         StateHasChanged();
     }
 }
