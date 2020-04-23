@@ -69,13 +69,24 @@
 
     private void ProcessPage()
     {
-        var neighbourBuffer = _currentPage > NumberOfNeighbours + 1 ? NumberOfNeighbours * 2 + 1 : NumberOfNeighbours * 2;
-        var startPage = _currentPage > _numberOfPages - neighbourBuffer ? _numberOfPages - neighbourBuffer : Math.Max(2, _currentPage - NumberOfNeighbours);
+        var maxPageNumber = _numberOfPages - 1;
+        var maxNeighbours = NumberOfNeighbours * 2;
 
-        _pages = Enumerable.Range(startPage, neighbourBuffer).ToList();
+        var startPage = Math.Max(2, _currentPage - NumberOfNeighbours);
+        var neighbourBuffer = _currentPage > NumberOfNeighbours + 1 ? maxNeighbours + 1 : maxNeighbours;
+
+        var rightSpillStopPage = maxPageNumber - NumberOfNeighbours;
+
+        var endPage = startPage + neighbourBuffer;
+        
+        var count = endPage <= maxPageNumber ? neighbourBuffer : _numberOfPages - startPage;
+
+        Console.WriteLine($"Count: {count}");
+
+        _pages = Enumerable.Range(startPage, count).ToList();
 
         _hasLeftSpill = startPage > 2;
-        _hasRightSpill = _currentPage < _numberOfPages - neighbourBuffer;
+        _hasRightSpill = _currentPage < rightSpillStopPage;
     }
 
     private async Task ChangePage(int pageId)
