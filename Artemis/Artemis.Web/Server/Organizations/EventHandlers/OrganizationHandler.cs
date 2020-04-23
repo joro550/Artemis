@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System;
+using MediatR;
 using AutoMapper;
 using System.Linq;
 using System.Threading;
@@ -13,9 +14,11 @@ using Artemis.Web.Server.Organizations.Notifications;
 namespace Artemis.Web.Server.Organizations.EventHandlers
 {
     public class OrganizationHandler
-        : IRequestHandler<GetOrganizationById, Organization>,
+        : IRequestHandler<GetOrganizationCount, int>, 
+          IRequestHandler<GetOrganizationById, Organization>,
           IRequestHandler<GetOrganizations, List<Organization>>,
-          IRequestHandler<GetOrganizationCount, int>,
+          IRequestHandler<SearchOrganizationName, List<Organization>>,
+          
           INotificationHandler<CreateOrganizationNotification>,
           INotificationHandler<EditOrganizationNotification>
     {
@@ -54,6 +57,22 @@ namespace Artemis.Web.Server.Organizations.EventHandlers
                     .Where(entity => entity.IsPublished || entity.Employees.Any(employee => employee.UserId == request.UserId));
 
              var organization = await query.Skip(request.Offset * request.Count)
+                .Take(request.Count)
+                .ToListAsync(cancellationToken);
+            return _mapper.Map<List<Organization>>(organization);
+        }
+
+        public async Task<List<Organization>> Handle(SearchOrganizationName request, CancellationToken cancellationToken)
+        {
+            var dbSet = _context.Set<OrganizationEntity>();
+
+            var query = string.IsNullOrWhiteSpace(request.UserId)
+                ? dbSet.Where(entity => entity.IsPublished)
+                : dbSet.Include(entity => entity.Employees)
+                    .Where(entity => entity.IsPublished || entity.Employees.Any(employee => employee.UserId == request.UserId));
+
+            var organization = await query.Where(entity => entity.Name.IndexOf(request.SearchValue, StringComparison.Ordinal) != 0)
+                .Skip(request.Offset * request.Count)
                 .Take(request.Count)
                 .ToListAsync(cancellationToken);
             return _mapper.Map<List<Organization>>(organization);

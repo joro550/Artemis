@@ -39,7 +39,20 @@ namespace Artemis.Web.Server.Organizations.Controllers
         public async Task<int> GetOrganizationCount()
         {
             var user = await _userManager.GetUserAsync(User);
-            return await _mediator.Send(new GetOrganizationCount() { UserId = user.User?.Id });
+            return await _mediator.Send(new GetOrganizationCount { UserId = user.User?.Id });
+        }
+
+        [HttpGet("search/{name}")]
+        public async Task<List<Organization>> SearchOrganizationNames(string name, [FromQuery] int? count, [FromQuery] int? offset)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return await _mediator.Send(new SearchOrganizationName
+            {
+                SearchValue = name,
+                Count = count ?? 50,
+                Offset = offset ?? 0,
+                UserId = user.User?.Id
+            });
         }
 
         [HttpPost]
