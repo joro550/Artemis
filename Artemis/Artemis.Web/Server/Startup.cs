@@ -58,7 +58,6 @@ namespace Artemis.Web.Server
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
-
             });
 
             services.AddIdentityServer()
