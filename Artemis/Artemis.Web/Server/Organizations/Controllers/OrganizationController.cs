@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Artemis.Web.Server.Users;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using Artemis.Web.Shared.Organizations;
 using Microsoft.AspNetCore.Authorization;
@@ -21,7 +22,8 @@ namespace Artemis.Web.Server.Organizations.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet("")]
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<List<Organization>> GetAllOrganizations([FromQuery] int? count, [FromQuery] int? offset)
         {
             var user = await _userManager.GetUserAsync(User);

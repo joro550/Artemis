@@ -1,23 +1,25 @@
-using System.Security.Claims;
-using Artemis.Web.Server.Config;
-using Artemis.Web.Server.Data;
-using Artemis.Web.Server.Employee;
-using Artemis.Web.Server.Messaging;
-using Artemis.Web.Server.Messaging.Adapters;
-using Artemis.Web.Server.Users;
-using Artemis.Web.Server.Users.Models;
-using AutoMapper;
+using System;
+using System.IO;
+using System.Reflection;
 using MediatR;
+using AutoMapper;
+using System.Security.Claims;
+using Artemis.Web.Server.Data;
+using Artemis.Web.Server.Users;
+using Artemis.Web.Server.Config;
+using Artemis.Web.Server.Messaging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Artemis.Web.Server.Users.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using Artemis.Web.Server.Messaging.Adapters;
 using Microsoft.Extensions.DependencyInjection;
-using Twilio;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.OpenApi.Models;
 
 namespace Artemis.Web.Server
 {
@@ -37,6 +39,22 @@ namespace Artemis.Web.Server
                 .AddRoles<IdentityRole>()
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Artemis Api",
+                    Description = "Api for the artemis project",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Mark Davies",
+                        Email = "markdavies550@gmail.com",
+                        Url = new Uri("https://twitter.com/joro550"),
+                    }
+                });
+            });
 
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
@@ -69,6 +87,8 @@ namespace Artemis.Web.Server
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSwagger();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -84,6 +104,8 @@ namespace Artemis.Web.Server
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
+
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Artemis Api v1"));
 
             app.UseRouting();
 

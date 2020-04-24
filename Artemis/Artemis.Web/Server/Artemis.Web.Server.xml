@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Artemis.Web.Server</name>
+    </assembly>
+    <members>
+        <member name="M:Artemis.Web.Server.Organizations.Controllers.OrganizationController.GetAllOrganizations(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Get all published organizations, if user has been authenticated
+            then all organizations associated to that user will be returned
+            regardless of publish status
+            </summary>
+            <param name="count">The amount of organizations to return</param>
+            <param name="offset">The offset of pages</param>
+            <returns>List of organizations</returns>
+        </member>
+    </members>
+</doc>

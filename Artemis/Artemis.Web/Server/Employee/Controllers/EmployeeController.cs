@@ -4,6 +4,7 @@ using Artemis.Web.Server.Users.Models;
 using Artemis.Web.Shared.Employee;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,7 @@ namespace Artemis.Web.Server.Employee.Controllers
 
         [Authorize]
         [HttpGet("status")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<List<EmployeeStatusResponse>> GetEmployeeStatus()
         {
             var user = await _userManager.GetUserAsync(User);

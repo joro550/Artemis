@@ -33,25 +33,25 @@ namespace Artemis.Web.Server
             _userConfig = userConfig.Value;
 
             _organizations = new Faker<OrganizationEntity>()
-                .RuleFor(entity => entity.Id, faker => faker.IndexFaker++)
+                .RuleFor(entity => entity.Id, faker => faker.IndexFaker +1)
                 .RuleFor(entity => entity.IsPublished, faker => true)
                 .RuleFor(entity => entity.Name, faker => faker.Company.CompanyName())
                 .RuleFor(entity => entity.Description, faker => faker.Company.Bs());
 
             _events = new Faker<EventEntity>()
-                .RuleFor(entity => entity.Id, faker => faker.IndexFaker++)
+                .RuleFor(entity => entity.Id, faker => faker.IndexFaker + 1)
                 .RuleFor(entity => entity.IsPublished, faker => true)
                 .RuleFor(entity => entity.Name, faker => faker.Lorem.Lines(1))
                 .RuleFor(entity => entity.Description, faker => faker.Lorem.Paragraph())
                 .RuleFor(entity => entity.EventType, faker => faker.Random.Enum<EventType>());
 
             _updates = new Faker<EventUpdateEntity>()
-                .RuleFor(entity => entity.Id, faker => faker.IndexFaker++)
+                .RuleFor(entity => entity.Id, faker => faker.IndexFaker + 1)
                 .RuleFor(entity => entity.Title, faker => string.Join(" ", faker.Lorem.Words()))
                 .RuleFor(entity => entity.Message, faker => faker.Lorem.Paragraphs(3));
 
             _template = new Faker<MessageTemplateEntity>()
-                .RuleFor(entity => entity.Id, faker => faker.IndexFaker++)
+                .RuleFor(entity => entity.Id, faker => faker.IndexFaker + 1)
                 .RuleFor(entity => entity.IsActive, faker => faker.Random.Bool())
                 .RuleFor(entity => entity.Name, faker => faker.Lorem.Word())
                 .RuleFor(entity => entity.Text, faker => faker.Lorem.Paragraph())
