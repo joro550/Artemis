@@ -26,15 +26,26 @@ namespace Artemis.Web.Server
     public class Startup
     {
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             _configuration = configuration;
+            _environment = environment;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("HelpUs"));
+            if (_environment.IsDevelopment())
+            {
+                services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("HelpUs"));
+            }
+            else
+            {
+                services.AddDbContext<ApplicationDbContext>(options
+                    => options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
+            }
+
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddDefaultUI()
