@@ -65,10 +65,6 @@ namespace Artemis.Web.Server
                         Url = new Uri("https://twitter.com/joro550"),
                     }
                 });
-
-                // Set the comments path for the Swagger JSON and UI.
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
             });
 
             services.AddIdentityServer()
