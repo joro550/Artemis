@@ -1,0 +1,69 @@
+﻿@page "/organization/{OrganizationId:int}/events/{EventId:int}/update/create"
+
+@inject NavigationManager Navigation
+@inject IAccessTokenProvider AuthenticationService
+
+@using Artemis.Web.Shared.EventUpdates
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@attribute [Authorize]
+
+<BreadcrumbView OrganizationId="OrganizationId" EventId="EventId" UpdateId="0" />
+
+<EditForm Model="@_model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <input type="hidden" @bind="_model.OrganizationId" />
+    <input type="hidden" @bind="_model.EventId" />
+
+    <div class="form-group">
+        <label>Title</label>
+        <InputText class="form-control" @bind-Value="_model.Title" />
+    </div>
+
+    <div class="form-group">
+        <label>Message</label>
+        <InputTextArea class="form-control" @bind-Value="_model.Message" />
+    </div>
+
+    <div class="form-group">
+        <label>Call to action</label>
+        <InputText class="form-control" @bind-Value="_model.CallToAction" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int OrganizationId { get; set; }
+
+    [Parameter]
+    public int EventId { get; set; }
+
+    private CreateEventUpdate _model = new CreateEventUpdate();
+
+    protected override Task OnInitializedAsync()
+    {
+        _model.EventId = EventId;
+        _model.OrganizationId = OrganizationId;
+        return base.OnInitializedAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri(Navigation.BaseUri);
+
+        var tokenResult = await AuthenticationService.RequestAccessToken();
+        if (tokenResult.TryGetToken(out var token))
+        {
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
+            await httpClient.PostJsonAsync($"/api/organization/{OrganizationId}/event/{EventId}/update", _model);
+        }
+        Navigation.NavigateTo($"/organization/{OrganizationId}/events/");
+    }
+}

@@ -1,0 +1,73 @@
+﻿@page "/organizations/{OrganizationId:int}/template/create"
+
+@using Artemis.Web.Shared.MessageTemplates
+@using Humanizer
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject NavigationManager Navigation
+@inject IAccessTokenProvider AuthenticationService
+
+@attribute [Authorize]
+
+<BreadcrumbView OrganizationId="OrganizationId" />
+
+<h3>Create Template</h3>
+<EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>Name</label>
+        <InputText class="form-control" @bind-Value="model.Name" />
+    </div>
+
+    <div class="form-group">
+        <label>Text</label>
+        <InputTextArea class="form-control" @bind-Value="model.Text" />
+    </div>
+
+    <div class="form-group row">
+        <label for="chkbox-active" class="col-sm-2">Is Active</label>
+        <div class="col-sm-10">
+            <div class="form-check">
+                <InputCheckbox id="chkbox-active" class="form-check-input" @bind-Value="model.IsActive" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Message event type</label>
+        <InputSelect @bind-Value="model.MessageEvent" class="form-control">
+            @foreach (var foo in Enum.GetValues(typeof(MessageEvent)))
+            {
+                <option value="@foo"> @foo.ToString().Humanize()</option>
+            }
+        </InputSelect>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int OrganizationId { get; set; }
+
+    private CreateMessageTemplate model = new CreateMessageTemplate();
+
+    private async Task HandleValidSubmit()
+    {
+        model.OrganizationId = OrganizationId;
+
+        var httpClient = new HttpClient { BaseAddress = new Uri(Navigation.BaseUri) };
+
+        var tokenResult = await AuthenticationService.RequestAccessToken();
+        if (tokenResult.TryGetToken(out var token))
+        {
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
+            await httpClient.PostJsonAsync($"api/organization/{OrganizationId}/template", model);
+        }
+
+        Navigation.NavigateTo($"/organizations/{OrganizationId}/templates");
+    }
+}

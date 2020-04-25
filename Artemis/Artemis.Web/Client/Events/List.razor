@@ -1,0 +1,99 @@
+﻿@page "/organization/{OrganizationId:int}/events/"
+@page "/organization/{OrganizationId:int}/events/list"
+
+@inject HttpClientAdapter Http
+@inject UserUtilities UserUtilities
+
+@using Artemis.Web.Client.Users
+@using Artemis.Web.Shared.Events
+@using Artemis.Web.Shared.Organizations
+
+
+<BreadcrumbView OrganizationId="OrganizationId" />
+
+<AuthorizeView>
+    @if (_isEmployee)
+    {
+        <a class="btn btn-primary" href="/organization/@OrganizationId/events/create/">Create Event</a>
+    }
+</AuthorizeView>
+<hr />
+
+<OrgJumbotron Organization="@_organization" DisplayCallToAction="true" />
+
+@if (_events == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!_events.Any())
+{
+    <p><em>We didn't seem to find any events for this organization, please check back later</em></p>
+}
+else
+{
+    <div class="row">
+        @foreach (var evt in _events)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header">@evt.Name</div>
+                    <div class="card-body">
+                        <p class="card-text">@evt.Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a href="/organization/@OrganizationId/events/@evt.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                                <AuthorizeView>
+                                    @if (_isEmployee)
+                                    {
+                                        <a href="/organization/@OrganizationId/events/edit/@evt.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                    }
+                                </AuthorizeView>
+                            </div>
+                            @if (evt is TimedEvent timedEvent)
+                            {
+
+                                var timeLeft = DateTime.Now.Subtract(timedEvent.EndDate);
+                                if (timeLeft.Days < 1)
+                                {
+                                    <small class="text-muted">@timeLeft.ToString("g") left</small>
+                                }
+                                else
+                                {
+                                    <small class="text-muted">@timeLeft.Days days left</small>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <PagerComponentNew NumberOfNeighbours="2" ItemsPerPage="_itemsPerPage" TotalItems="_eventCount" OnItemClick="OnPagerClick" />
+}
+
+@code {
+    [Parameter]
+    public int OrganizationId { get; set; }
+
+    private int _eventCount;
+    private Event[] _events;
+    private bool _isEmployee;
+    private int _itemsPerPage = 30;
+    private Organization _organization;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _organization = await Http.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
+        _events = await Http.GetJsonAsync<Event[]>($"api/organization/{OrganizationId}/event?count={_itemsPerPage}");
+        _eventCount = await Http.GetJsonAsync<int>($"api/organization/{OrganizationId}/event/count");
+
+        _isEmployee = await UserUtilities.IsEmployeeOfOrganization(OrganizationId);
+    }
+
+    protected async Task OnPagerClick(int page)
+    {
+        _events = await Http.GetJsonAsync<Event[]>($"api/organization/{OrganizationId}/event?offset={page}&count={_itemsPerPage}");
+        StateHasChanged();
+    }
+}

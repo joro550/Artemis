@@ -1,0 +1,73 @@
+﻿@page "/organization/{OrganizationId:int}/templates/list"
+@page "/organization/{OrganizationId:int}/templates"
+
+@using Artemis.Web.Shared.Organizations
+@using Microsoft.AspNetCore.Authorization
+@using Artemis.Web.Shared.MessageTemplates
+
+@inject HttpClientAdapter Http
+
+@attribute [Authorize]
+
+<BreadcrumbView OrganizationId="OrganizationId" />
+<AuthorizeView>
+    <a class="btn btn-primary" href="/organizations/@OrganizationId/template/create">Create</a>
+</AuthorizeView>
+<hr />
+<OrgJumbotron Organization="@_organization" DisplayCallToAction="false" />
+
+<h3>Templates</h3>
+@if (_templates == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!_templates.Any())
+{
+    <p><em>We didn't seem to find anything</em></p>
+}
+else
+{
+    <div class="row">
+        @foreach (var template in _templates)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header">@template.Name</div>
+                    <div class="card-body">
+                        <p class="card-text">@template.Text</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a href="/organizations/@OrganizationId/template/edit/@template.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            </div>
+                        </div>
+                        <small class="text-muted">@template.MessageEvent</small>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <PagerComponentNew NumberOfNeighbours="2" ItemsPerPage="_itemsPerPage" TotalItems="_templateCount" OnItemClick="OnPagerClick" />
+}
+
+@code {
+    [Parameter]
+    public int OrganizationId { get; set; }
+
+    private int _templateCount;
+    private int _itemsPerPage = 30;
+    private Organization _organization;
+    private MessageTemplate[] _templates;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _organization = await Http.GetJsonAsync<Organization>($"api/organization/{OrganizationId}");
+        _templates = await Http.GetJsonAsync<MessageTemplate[]>($"api/organization/{OrganizationId}/template");
+        _templateCount = await Http.GetJsonAsync<int>($"api/organization/{OrganizationId}/template/count");
+    }
+
+    protected async Task OnPagerClick(int page)
+    {
+        _templates = await Http.GetJsonAsync<MessageTemplate[]>($"api/organization/{OrganizationId}/template?offset={page}&count={_itemsPerPage}");
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,43 @@
+﻿@using Artemis.Web.Client.Users
+@using Artemis.Web.Shared.EventUpdates
+
+@inject UserUtilities UserUtilities
+
+<div class="card mb-3">
+    <div class="card-header">
+        @Model.Title
+    </div>
+    <div class="card-body">
+        <p class="card-text">
+            @((MarkupString)Markdig.Markdown.ToHtml(Model.Message))
+        </p>
+        @if (!string.IsNullOrWhiteSpace(Model.CallToAction))
+        {
+            <a href="@Model.CallToAction" class="btn btn-primary">Go somewhere</a>
+        }
+
+
+        @if (_canEdit)
+        {
+            <a href="/organization/@OrganizationId/events/@Model.EventId/update/edit/@Model.Id" class="btn btn-primary">Edit</a>
+        }
+    </div>
+    <div class="card-footer text-muted">
+        2 days ago
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventUpdate Model { get; set; }
+
+    [Parameter]
+    public int OrganizationId { get; set; }
+
+    private bool _canEdit;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _canEdit = await UserUtilities.IsEmployeeOfOrganization(OrganizationId);
+    }
+}

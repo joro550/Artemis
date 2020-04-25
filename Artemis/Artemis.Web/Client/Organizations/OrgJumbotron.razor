@@ -1,0 +1,122 @@
+﻿@using System.Threading
+@using Artemis.Web.Shared.Organizations
+@using Artemis.Web.Shared.Subscriptions
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject HttpClientAdapter HttpClientAdapter
+@inject NavigationManager Navigation
+
+@if (Organization != null)
+{
+    if (_displayToast)
+    {
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="mr-auto">Subscription</strong>
+            </div>
+            <div class="toast-body">
+                Subscription has been created
+            </div>
+        </div>
+    }
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1>@Organization.Name</h1>
+            <p class="lead text-muted">@Organization.Description</p>
+            @if (DisplayCallToAction && _canUserSubscribe)
+            {
+                <AuthorizeView>
+                    <p>
+                        @* <button @onclick="@(async () => await CreateLocationBasedSubscription())" class="btn btn-primary my-2">Subscribe to specific area</button> *@
+                        <button @onclick="@(async () => await CreateOrganizationBasedSubscription())" class="btn btn-secondary my-2">Subscribe to all events</button>
+                    </p>
+                </AuthorizeView>
+            }
+        </div>
+    </section>
+}
+else
+{
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1><em>Please Wait</em></h1>
+            <p class="lead text-muted">...</p>
+        </div>
+    </section>
+}
+
+@code {
+    [Parameter]
+    public Organization Organization { get; set; }
+
+    [Parameter]
+    public bool DisplayCallToAction { get; set; }
+
+    private Timer _timer;
+    private bool _displayToast;
+    private bool _canUserSubscribe;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var tokenResult = await HttpClientAdapter.CanGetToken();
+
+        if(tokenResult.Success)
+            _canUserSubscribe = await HttpClientAdapter.GetJsonAsync<bool>("/api/user/permission/subscribe");
+    }
+
+    private async Task CreateLocationBasedSubscription()
+    {
+        var tokenResult = await HttpClientAdapter.CanGetToken();
+        if (tokenResult.Success)
+        {
+            var result = await HttpClientAdapter.PostJsonAsync<LocationSubscriptionResult>("/api/subscription/location",
+                    new LocationSubscriptionRequest {OrganizationId = Organization.Id});
+
+            if (result.Success)
+            {
+                _displayToast = true;
+                SetUpTimer();
+            }
+        }
+        else
+        {
+            Navigation.NavigateTo(tokenResult.Token.RedirectUrl);
+        }
+    }
+
+    private async Task CreateOrganizationBasedSubscription()
+    {
+
+        var tokenResult = await HttpClientAdapter.CanGetToken();
+        if (tokenResult.Success)
+        {
+            var result = await HttpClientAdapter.PostJsonAsync<OrganizationSubscriptionResult>("/api/subscription/organization",
+                new OrganizationSubscriptionRequest { OrganizationId = Organization.Id });
+
+            if (result.Success)
+            {
+                _displayToast = true;
+                SetUpTimer();
+            }
+        }
+        else
+        {
+            Navigation.NavigateTo(tokenResult.Token.RedirectUrl);
+        }
+    }
+
+    private void SetUpTimer()
+    {
+        if (_timer == null)
+        {
+            _timer = new Timer((o) =>
+            {
+                _displayToast = false;
+                StateHasChanged();
+                _timer.Dispose();
+                _timer = null;
+            }, null, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2));
+        }
+    }
+}

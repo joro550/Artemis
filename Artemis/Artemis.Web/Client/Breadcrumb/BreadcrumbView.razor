@@ -1,0 +1,54 @@
+﻿@using Artemis.Web.Shared.Events
+@using Artemis.Web.Shared.Organizations
+
+@inject HttpClient Http
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        @if (OrganizationId.HasValue)
+        {
+            <li class="breadcrumb-item"><a href="/organization/@OrganizationId.Value/events">@_organization?.Name</a></li>
+            @if (EventId.HasValue)
+            {
+                <li class="breadcrumb-item active" aria-current="page">
+                    @if (UpdateId.HasValue)
+                    {
+                        <a href="/organization/@OrganizationId.Value/events/@EventId.Value">@_event?.Name</a>
+                    }
+                    else
+                    {
+                        @_event?.Name
+                    }
+                </li>
+            }
+        }
+    </ol>
+</nav>
+
+@code {
+    [Parameter]
+    public int? OrganizationId { get; set; }
+
+    [Parameter]
+    public int? EventId { get; set; }
+
+    [Parameter]
+    public int? UpdateId { get; set; }
+
+    private Event _event;
+    private Organization _organization;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (OrganizationId != null)
+        {
+            _organization = await Http.GetJsonAsync<Organization>($"/api/organization/{OrganizationId}");
+
+            if (EventId != null)
+            {
+                _event = await Http.GetJsonAsync<Event>($"/api/organization/{OrganizationId}/event/{EventId}");
+            }
+        }
+    }
+}

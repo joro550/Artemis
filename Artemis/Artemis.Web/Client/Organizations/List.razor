@@ -1,0 +1,81 @@
+﻿@page "/"
+@page "/organizations"
+@page "/organizations/list"
+
+@inject HttpClientAdapter Http
+@inject NavigationManager Navigation
+
+@using Artemis.Web.Shared.Employee
+@using Artemis.Web.Shared.Organizations
+
+<BreadcrumbView />
+
+<h1>Organizations</h1>
+
+@if (_orgs == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!_orgs.Any())
+{
+    <p><em>We didn't seem to find anything</em></p>
+}
+else
+{
+    <div class="row">
+        @foreach (var org in _orgs)
+        {
+            var isEmployee = _employeeStatuses.Any(response => response.OrganizationId == org.Id);
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header">@org.Name</div>
+                    <div class="card-body">
+                        <p class="card-text">@org.Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a href="/organization/@org.Id/events/" class="btn btn-sm btn-outline-secondary">View</a>
+
+                                @if (isEmployee)
+                                {
+                                    <a href="/organization/@org.Id/templates" class="btn btn-sm btn-outline-secondary">Message templates</a>
+                                    <a href="/organization/edit/@org.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <PagerComponentNew NumberOfNeighbours="2" ItemsPerPage="_itemsPerPage" TotalItems="_orgCount" OnItemClick="OnPagerClick" />
+}
+
+@code {
+    private int _orgCount;
+    private Organization[] _orgs;
+    private int _itemsPerPage = 30;
+    private EmployeeStatusResponse[] _employeeStatuses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _orgs = await Http.GetJsonAsync<Organization[]>($"api/Organization?count={_itemsPerPage}");
+        _orgCount = await Http.GetJsonAsync<int>("/api/Organization/count");
+
+        var canGetToken = await Http.CanGetToken();
+        if (_orgs.Any() && canGetToken.Success)
+        {
+            _employeeStatuses = await Http.GetJsonAsync<EmployeeStatusResponse[]>($"api/employee/status");
+        }
+        else
+        {
+            _employeeStatuses = new EmployeeStatusResponse[0];
+        }
+    }
+
+    protected async Task OnPagerClick(int page)
+    {
+        _orgs = await Http.GetJsonAsync<Organization[]>($"/api/Organization?offset={page}&count={_itemsPerPage}");
+        StateHasChanged();
+    }
+}

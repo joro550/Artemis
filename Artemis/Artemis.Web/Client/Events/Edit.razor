@@ -1,0 +1,86 @@
+﻿@page "/organization/{OrganizationId:int}/events/edit/{EventId:int}"
+
+@inject HttpClientAdapter Http
+@inject NavigationManager Navigation
+@inject IAccessTokenProvider AuthenticationService
+
+@using Artemis.Web.Shared.Events
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@attribute [Authorize]
+
+<BreadcrumbView OrganizationId="OrganizationId" EventId="EventId" />
+
+<EditForm Model="@_model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <input type="hidden" @bind="_model.OrganizationId" />
+    <input type="hidden" @bind="_model.Id" />
+
+    <div class="form-group">
+        <label>Name</label>
+        <InputText class="form-control" @bind-Value="_model.Name" />
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <InputTextArea class="form-control" @bind-Value="_model.Description" />
+    </div>
+
+    <div class="form-group row">
+        <label for="chkbox-timed-event" class="col-sm-2">Does this event have a time limit?</label>
+        <div class="col-sm-10">
+            <div class="form-check">
+                <InputCheckbox id="chkbox-timed-event" class="form-check-input" @bind-Value="_model.IsTimedEvent" />
+            </div>
+        </div>
+    </div>
+
+    @if (_model.IsTimedEvent)
+    {
+        <div class="form-group">
+            <label>Start Date</label>
+            <InputDate class="form-control" @bind-Value="_model.StartDate" />
+        </div>
+
+        <div class="form-group">
+            <label>End Date</label>
+            <InputDate class="form-control" @bind-Value="_model.EndDate" />
+        </div>
+    }
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int OrganizationId { get; set; }
+
+    [Parameter]
+    public int EventId { get; set; }
+
+    private readonly EditEvent _model = new EditEvent();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var canGetToken = await Http.CanGetToken();
+        if (!canGetToken.Success)
+        {
+            Navigation.NavigateTo($"/organization/{OrganizationId}/events/");
+            return;
+        }
+
+        var evt = await Http.GetJsonAsync<Event>($"/api/organization/{OrganizationId}/event/{EventId}");
+        _model.Load(evt);
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await Http.PutJsonAsync($"/api/organization/{OrganizationId}/event", _model);
+        Navigation.NavigateTo($"/organization/{OrganizationId}/events/");
+    }
+}

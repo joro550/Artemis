@@ -16,10 +16,10 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
+        dotnet-version: 3.1.201
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore ./Artemis/Artemis.sln
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build ./Artemis/Artemis.sln --configuration Release --no-restore
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test ./Artemis/Artemis.sln --no-restore --verbosity normal
