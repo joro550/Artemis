@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Artemis.Web.Server.Users.Models;
 using Microsoft.AspNetCore.Identity;
@@ -54,8 +55,8 @@ namespace Artemis.Web.Server.Areas.Identity.Pages.Account
                     values: new { area = "Identity", userId = userId, code = code },
                     protocol: Request.Scheme);
 
-                await _sender.SendEmailAsync(Email, "Welcome to Artemis",
-                    $"Thank you for registering, please click this link to confirm your account: {url}");
+                await _sender.SendEmailAsync(Email, "Welcome to Artemis - Confirm your email",
+                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(url)}'>clicking here</a>.");
             }
             else
             {
