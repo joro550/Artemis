@@ -38,11 +38,11 @@ namespace Artemis.Web.Server.EventUpdates.Controllers
         [Authorize]
         public async Task<IActionResult> CreateEventUpdate(CreateEventUpdate model)
         {
-            var @event = await _mediator.Send(new GetEvent {OrganizationId = model.OrganizationId, Id = model.EventId});
+            var user = await _userManager.GetUserAsync(User);
+            var @event = await _mediator.Send(new GetEvent {UserId = user.User?.Id, OrganizationId = model.OrganizationId, Id = model.EventId});
             if (@event == null)
                 return BadRequest();
 
-            var user = await _userManager.GetUserAsync(User);
             var canCreateEvent = await user.CanCreateUpdateFor(@event);
 
             if (!canCreateEvent)
@@ -56,11 +56,11 @@ namespace Artemis.Web.Server.EventUpdates.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateEventUpdate(EditEventUpdate model)
         {
-            var @event = await _mediator.Send(new GetEvent { OrganizationId = model.OrganizationId, Id = model.EventId });
+            var user = await _userManager.GetUserAsync(User);
+            var @event = await _mediator.Send(new GetEvent { UserId = user.User?.Id, OrganizationId = model.OrganizationId, Id = model.EventId });
             if (@event == null)
                 return BadRequest();
 
-            var user = await _userManager.GetUserAsync(User);
             var canCreateEvent = await user.CanCreateUpdateFor(@event);
             if (!canCreateEvent)
                 return Unauthorized();

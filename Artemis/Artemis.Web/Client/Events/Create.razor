@@ -1,5 +1,6 @@
 ﻿@page "/organization/{OrganizationId:int}/events/create"
 
+@inject HttpClientAdapter Http
 @inject NavigationManager Navigation
 @inject IAccessTokenProvider AuthenticationService
 
@@ -67,15 +68,7 @@
 
     private async Task HandleValidSubmit()
     {
-        var httpClient = new HttpClient {BaseAddress = new Uri(Navigation.BaseUri)};
-
-        var tokenResult = await AuthenticationService.RequestAccessToken();
-        if (tokenResult.TryGetToken(out var token))
-        {
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
-            await httpClient.PostJsonAsync($"/api/organization/{OrganizationId}/event", _model);
-
-        }
+        await Http.PostJsonAsync($"/api/organization/{OrganizationId}/event", _model);
         Navigation.NavigateTo($"/organization/{OrganizationId}/events/");
     }
 }

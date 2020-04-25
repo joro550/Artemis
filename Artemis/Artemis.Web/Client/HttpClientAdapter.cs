@@ -36,6 +36,12 @@ namespace Artemis.Web.Client
             return await httpClient.PostJsonAsync<T>(requestUri, content);
         }
 
+        public async Task PostJsonAsync(string requestUri, object content)
+        {
+            var httpClient = await SetUpClient();
+            await httpClient.PostJsonAsync(requestUri, content);
+        }
+
         public async Task PutJsonAsync(string requestUri, object content)
         {
             var httpClient = await SetUpClient();
