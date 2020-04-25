@@ -68,7 +68,9 @@
     protected override void OnInitialized()
     {
         _numberOfPages = (int)Math.Ceiling(TotalItems / ItemsPerPage);
-        ProcessPage();
+
+        if(_numberOfPages > 1)
+            ProcessPage();
     }
 
     private string GetActiveClass(int page) => _currentPage == page ? "active" : string.Empty;
