@@ -19,7 +19,9 @@ namespace Artemis.Web.Server.Data.Models
 
         [Required]
         public string Message { get; set; }
-
+        
+        public EventEntity Event { get; set; }
+        
         public string CallToAction { get; set; }
     }
 }

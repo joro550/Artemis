@@ -1,8 +1,8 @@
 ﻿@page "/organizations/{OrganizationId:int}/template/create"
 
-@using Artemis.Web.Shared.MessageTemplates
 @using Humanizer
 @using Microsoft.AspNetCore.Authorization
+@using Artemis.Web.Shared.MessageTemplates
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @inject NavigationManager Navigation
@@ -68,6 +68,6 @@
             await httpClient.PostJsonAsync($"api/organization/{OrganizationId}/template", model);
         }
 
-        Navigation.NavigateTo($"/organizations/{OrganizationId}/templates");
+        Navigation.NavigateTo($"/organization/{OrganizationId}/templates");
     }
 }

@@ -7,6 +7,7 @@ namespace Artemis.Web.Server.EventUpdates
     {
         public int EventId { get; set; }
         public int UpdateId { get; set; }
+        public string? UserId { get; set; }
         public int OrganizationId { get; set; }
     }
 }

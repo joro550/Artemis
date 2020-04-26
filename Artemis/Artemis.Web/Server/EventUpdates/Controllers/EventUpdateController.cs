@@ -23,16 +23,33 @@ namespace Artemis.Web.Server.EventUpdates.Controllers
         }
 
         [HttpGet]
-        public async Task<List<EventUpdate>> GetEventUpdates(int organizationId, int eventId, [FromQuery] int? count, [FromQuery] int? offset) =>
-            await _mediator.Send(new GetEventUpdates {OrganizationId = organizationId, EventId = eventId, Count = count ?? 50, Offset = offset ?? 0});
+        public async Task<List<EventUpdate>> GetEventUpdates(int organizationId, int eventId, [FromQuery] int? count, [FromQuery] int? offset)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return await _mediator.Send(new GetEventUpdates
+            {
+                EventId = eventId,  
+                Count = count ?? 50, 
+                Offset = offset ?? 0,
+                UserId = user.User?.Id,
+                OrganizationId = organizationId,
+            });
+        }
 
         [HttpGet("{updateId:int}")]
-        public async Task<EventUpdate> GetEventUpdate(int organizationId, int eventId, int updateId) 
-            => await _mediator.Send(new GetEventUpdate {OrganizationId = organizationId, EventId = eventId, UpdateId = updateId});
+        public async Task<EventUpdate> GetEventUpdate(int organizationId, int eventId, int updateId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return await _mediator.Send(new GetEventUpdate
+                {OrganizationId = organizationId, UserId = user.User?.Id, EventId = eventId, UpdateId = updateId});
+        }
 
         [HttpGet("count")]
-        public async Task<int> GetEventUpdateCount(int eventId) 
-            => await _mediator.Send(new GetEventUpdateCount {EventId = eventId});
+        public async Task<int> GetEventUpdateCount(int eventId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return await _mediator.Send(new GetEventUpdateCount {UserId = user.User?.Id, EventId = eventId});
+        }
 
         [HttpPost]
         [Authorize]

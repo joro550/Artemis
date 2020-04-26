@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Artemis.Web.Client.Events;
 using Artemis.Web.Shared.Events;
 using Artemis.Web.Shared.Organizations;
 
@@ -30,5 +32,7 @@ namespace Artemis.Web.Server.Data.Models
 
         public EventAddressEntity Address { get; set; }
         public OrganizationEntity Organization { get; set; }
+
+        public List<EventUpdateEntity> Updates { get; set; }
     }
 }

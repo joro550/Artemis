@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Artemis.Web.Server.Data.Models;
 using Artemis.Web.Server.Users.Models;
-using Artemis.Web.Shared.EventAddresses;
 using Artemis.Web.Shared.Subscriptions;
+using Artemis.Web.Shared.EventAddresses;
 using IdentityServer4.EntityFramework.Options;
 using EventType = Artemis.Web.Shared.Events.EventType;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
@@ -63,6 +63,10 @@ namespace Artemis.Web.Server.Data
             modelBuilder.Entity<EventEntity>()
                 .HasOne(entity => entity.Organization)
                 .WithMany(entity => entity.Events);
+
+            modelBuilder.Entity<EventUpdateEntity>()
+                .HasOne(entity => entity.Event)
+                .WithMany(entity => entity.Updates);
         }
     }
 }
