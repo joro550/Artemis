@@ -55,6 +55,7 @@ namespace Artemis.Web.Server.Messaging.EventHandlers
         private async Task<List<OrganizationSubscriptionEntity>> GetSubscriptionsForEvent(EventEntity eventEntity, CancellationToken cancellationToken) =>
             await Context.Set<OrganizationSubscriptionEntity>()
                 .Where(entity => entity.OrganizationId == eventEntity.OrganizationId)
+                .Distinct()
                 .ToListAsync(cancellationToken);
 
         private async Task<List<OrganizationSubscriptionEntity>> GetSubscriptionsForEvent(int notificationId, CancellationToken cancellationToken)
@@ -65,6 +66,7 @@ namespace Artemis.Web.Server.Messaging.EventHandlers
 
             return await Context.Set<OrganizationSubscriptionEntity>()
                 .Where(entity => entity.OrganizationId == @event.OrganizationId)
+                .Distinct()
                 .ToListAsync(cancellationToken);
         }
 
