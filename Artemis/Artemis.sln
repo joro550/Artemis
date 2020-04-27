@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Artemis.Web.Client", "Artem
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Artemis.Web.Shared", "Artemis.Web\Shared\Artemis.Web.Shared.csproj", "{48AC4059-F8EA-4D34-901C-D497A55DCC38}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artemis.Web.Server.Tests", "Artemis.Web.Server.Tests\Artemis.Web.Server.Tests.csproj", "{D99CCE7D-B5EB-4069-A130-98AE32629A90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{48AC4059-F8EA-4D34-901C-D497A55DCC38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48AC4059-F8EA-4D34-901C-D497A55DCC38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48AC4059-F8EA-4D34-901C-D497A55DCC38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D99CCE7D-B5EB-4069-A130-98AE32629A90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D99CCE7D-B5EB-4069-A130-98AE32629A90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D99CCE7D-B5EB-4069-A130-98AE32629A90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D99CCE7D-B5EB-4069-A130-98AE32629A90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

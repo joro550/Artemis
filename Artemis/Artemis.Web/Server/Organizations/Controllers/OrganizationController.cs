@@ -14,9 +14,9 @@ namespace Artemis.Web.Server.Organizations.Controllers
     public class OrganizationController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly UserAdapter _userManager;
+        private readonly IUserAdapter _userManager;
 
-        public OrganizationController(IMediator mediator, UserAdapter userManager)
+        public OrganizationController(IMediator mediator, IUserAdapter userManager)
         {
             _mediator = mediator;
             _userManager = userManager;

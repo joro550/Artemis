@@ -15,9 +15,9 @@ namespace Artemis.Web.Server.MessageTemplates.Controllers
     public class MessageTemplateController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly UserAdapter _userManager;
+        private readonly IUserAdapter _userManager;
 
-        public MessageTemplateController(IMediator mediator, UserAdapter userManager)
+        public MessageTemplateController(IMediator mediator, IUserAdapter userManager)
         {
             _mediator = mediator;
             _userManager = userManager;

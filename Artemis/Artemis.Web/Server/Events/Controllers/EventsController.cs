@@ -15,9 +15,9 @@ namespace Artemis.Web.Server.Events.Controllers
     public class EventsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly UserAdapter _userManager;
+        private readonly IUserAdapter _userManager;
 
-        public EventsController(IMediator mediator, UserAdapter userManager)
+        public EventsController(IMediator mediator, IUserAdapter userManager)
         {
             _mediator = mediator;
             _userManager = userManager;

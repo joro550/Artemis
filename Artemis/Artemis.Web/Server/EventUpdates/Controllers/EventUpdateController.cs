@@ -14,9 +14,9 @@ namespace Artemis.Web.Server.EventUpdates.Controllers
     public class EventUpdateController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly UserAdapter _userManager;
+        private readonly IUserAdapter _userManager;
 
-        public EventUpdateController(IMediator mediator, UserAdapter userManager)
+        public EventUpdateController(IMediator mediator, IUserAdapter userManager)
         {
             _mediator = mediator;
             _userManager = userManager;

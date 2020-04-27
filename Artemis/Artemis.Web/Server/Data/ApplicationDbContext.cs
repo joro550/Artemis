@@ -22,9 +22,8 @@ namespace Artemis.Web.Server.Data
         public DbSet<UserSubscriptionEntity> Subscriptions { get; set; }
         public DbSet<MessageTemplateEntity> MessageTemplates { get; set; }
 
-        public ApplicationDbContext(
-            DbContextOptions options,
-            IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
+        public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions) 
+            : base(options, operationalStoreOptions)
         {
         }
 

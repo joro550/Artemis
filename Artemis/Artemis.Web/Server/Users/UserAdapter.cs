@@ -6,7 +6,12 @@ using Artemis.Web.Server.Users.Models;
 
 namespace Artemis.Web.Server.Users
 {
-    public class UserAdapter
+    public interface IUserAdapter
+    {
+        Task<UserModel> GetUserAsync(ClaimsPrincipal principal);
+    }
+
+    public class UserAdapter : IUserAdapter
     {
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;

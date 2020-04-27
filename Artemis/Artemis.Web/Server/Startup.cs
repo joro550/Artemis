@@ -1,11 +1,10 @@
 using System;
-using System.IO;
-using System.Reflection;
 using MediatR;
 using AutoMapper;
 using System.Security.Claims;
 using Artemis.Web.Server.Data;
 using Artemis.Web.Server.Users;
+using Microsoft.OpenApi.Models;
 using Artemis.Web.Server.Config;
 using Artemis.Web.Server.Messaging;
 using Microsoft.AspNetCore.Builder;
@@ -19,7 +18,6 @@ using Microsoft.AspNetCore.Authentication;
 using Artemis.Web.Server.Messaging.Adapters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.OpenApi.Models;
 
 namespace Artemis.Web.Server
 {
@@ -84,7 +82,7 @@ namespace Artemis.Web.Server
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<DataSeeder>();
-            services.AddTransient<UserAdapter>();
+            services.AddTransient<IUserAdapter, UserAdapter>();
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddSingleton<TwilioMessageAdapterFactory>();
 
