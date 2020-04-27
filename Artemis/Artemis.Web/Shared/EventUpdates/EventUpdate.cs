@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace Artemis.Web.Shared.EventUpdates
 {
     public class EventUpdate
@@ -8,5 +10,7 @@ namespace Artemis.Web.Shared.EventUpdates
         public string Title { get; set; }
         public string Message { get; set; }
         public string CallToAction { get; set; }
+        public string CallToActionText { get; set; }
+        public DateTime UpdateCreatedTime { get; set; }
     }
 }

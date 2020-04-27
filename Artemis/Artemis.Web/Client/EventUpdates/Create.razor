@@ -1,11 +1,10 @@
 ﻿@page "/organization/{OrganizationId:int}/events/{EventId:int}/update/create"
 
+@inject HttpClientAdapter HttpClient
 @inject NavigationManager Navigation
-@inject IAccessTokenProvider AuthenticationService
 
 @using Artemis.Web.Shared.EventUpdates
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @attribute [Authorize]
 
@@ -55,15 +54,9 @@
 
     private async Task HandleValidSubmit()
     {
-        var httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri(Navigation.BaseUri);
+        _model.UpdateCreatedTime = DateTime.UtcNow;
 
-        var tokenResult = await AuthenticationService.RequestAccessToken();
-        if (tokenResult.TryGetToken(out var token))
-        {
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Value}");
-            await httpClient.PostJsonAsync($"/api/organization/{OrganizationId}/event/{EventId}/update", _model);
-        }
+        await HttpClient.PostJsonAsync($"/api/organization/{OrganizationId}/event/{EventId}/update", _model);
         Navigation.NavigateTo($"/organization/{OrganizationId}/events/");
     }
 }

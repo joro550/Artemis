@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Artemis.Web.Shared.EventUpdates
 {
@@ -18,5 +19,7 @@ namespace Artemis.Web.Shared.EventUpdates
 
         [DataType(DataType.Url)]
         public string CallToAction { get; set; }
+        public string CallToActionText { get; set; }
+        public DateTime UpdateCreatedTime { get; set; }
     }
 }

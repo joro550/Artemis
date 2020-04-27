@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Artemis.Web.Server.Data.Models
@@ -23,5 +24,8 @@ namespace Artemis.Web.Server.Data.Models
         public EventEntity Event { get; set; }
         
         public string CallToAction { get; set; }
+        public string CallToActionText { get; set; }
+
+        public DateTime UpdateCreatedTime { get; set; }
     }
 }
