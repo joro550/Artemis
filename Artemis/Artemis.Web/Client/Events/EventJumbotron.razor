@@ -68,7 +68,7 @@ else
         var tokenResult = await HttpClientAdapter.CanGetToken();
         if (tokenResult.Success)
         {
-            var result = await HttpClientAdapter.PostJsonAsync<EventSubscriptionResult>("/api/subscription/location",
+            var result = await HttpClientAdapter.PostJsonAsync<EventSubscriptionResult>("/api/subscription/event",
                 new EventSubscriptionRequest { EventId = Event.Id });
 
             if (result.Success)
